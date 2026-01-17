@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIX | Le Nexus (Projets)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
+
+        :root { --primary: #3B82F6; --bg: #05070A; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+        .font-title { font-family: 'Syncopate', sans-serif; }
+        .font-mono { font-family: 'JetBrains+Mono', monospace; }
+
+        /* UI Elements */
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        /* Project Card Styles */
+        .project-card { position: relative; height: 500px; overflow: hidden; border-radius: 2rem; cursor: pointer; }
+        .project-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease; filter: grayscale(100%); }
+        .project-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0.8; transition: opacity 0.5s ease; }
+        .project-info { position: absolute; bottom: 0; left: 0; padding: 3rem; transform: translateY(20px); opacity: 0; transition: all 0.5s ease; z-index: 10; }
+        
+        .project-card:hover .project-img { transform: scale(1.1); filter: grayscale(0%); }
+        .project-card:hover .project-overlay { opacity: 0.4; }
+        .project-card:hover .project-info { transform: translateY(0); opacity: 1; }
+
+        /* Cursor & Preloader */
+        #preloader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 20px; }
+        .loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        #custom-cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 99999; mix-blend-difference: difference; }
+        #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 99998; transition: transform 0.15s ease-out; }
+        #webgl-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
+
+        /* Footer Animation */
+        .footer-logo-svg { width: 100%; height: auto; max-height: 300px; opacity: 0.3; transition: opacity 0.5s ease; }
+        .footer-logo-svg:hover { opacity: 0.8; }
+        .logo-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawLogo 5s ease-in-out forwards infinite alternate; }
+        @keyframes drawLogo { to { stroke-dashoffset: 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">LOADING_ARCHIVES</div>
+        <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
+        <div class="loader-bar"><div class="loader-progress" id="load-bar"></div></div>
+    </div>
+
+    <!-- CURSORS -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <!-- BG -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-6 md:px-20 pointer-events-none mix-blend-difference">
+        <a href="index.html" class="text-2xl font-black font-title tracking-tighter pointer-events-auto group">
+            KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
+        </a>
+        <div class="hidden md:flex gap-12 items-center pointer-events-auto font-mono text-[9px] tracking-[0.4em]">
+            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
+            <a href="projets.html" class="text-blue-500">NEXUS</a>
+            <a href="apropos.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
+            <a href="contact.html" class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
+                INITIALISER
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO PROJETS -->
+    <section class="relative pt-48 pb-20 px-8 md:px-24">
+        <div class="max-w-7xl">
+            <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8">// ARCHIVES_DU_NEXUS</div>
+            <h1 class="text-6xl md:text-9xl font-black font-title leading-none tracking-tighter mb-12">
+                RÉALITÉS <br><span class="text-transparent outline-text" style="-webkit-text-stroke: 1px white;">DÉPLOYÉES.</span>
+            </h1>
+            
+            <!-- Filter System (Fake functionality for aesthetics) -->
+            <div class="flex flex-wrap gap-8 mt-12 font-mono text-xs tracking-widest cursor-pointer">
+                <span class="text-blue-500 border-b border-blue-500 pb-1">TOUT [4]</span>
+                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">FINTECH [1]</span>
+                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">LOGISTIQUE [1]</span>
+                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">IMMOBILIER [1]</span>
+                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">E-COMMERCE [1]</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY GRID -->
+    <section class="pb-40 px-8 md:px-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            <!-- Projet 1 -->
+            <div class="project-card group reveal-up">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop" class="project-img" alt="Fintech">
+                <div class="project-overlay"></div>
+                <div class="project-info">
+                    <div class="flex gap-4 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">REACT.JS</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">WEB3</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">Aether Capital</h3>
+                    <p class="opacity-60 text-sm">Plateforme d'investissement décentralisée pour le marché de la RDC.</p>
+                </div>
+            </div>
+
+            <!-- Projet 2 (Decalage vertical pour effet maçonnerie) -->
+            <div class="project-card group mt-0 md:mt-20 reveal-up">
+                <img src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1974&auto=format&fit=crop" class="project-img" alt="Logistique">
+                <div class="project-overlay"></div>
+                <div class="project-info">
+                    <div class="flex gap-4 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">IOT</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">THREE.JS</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">KinFlow Systems</h3>
+                    <p class="opacity-60 text-sm">Suivi logistique en temps réel avec visualisation 3D de la flotte.</p>
+                </div>
+            </div>
+
+            <!-- Projet 3 -->
+            <div class="project-card group reveal-up">
+                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" class="project-img" alt="Immobilier">
+                <div class="project-overlay"></div>
+                <div class="project-info">
+                    <div class="flex gap-4 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">VR</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">MOBILE APP</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">ImmoFutur Gombe</h3>
+                    <p class="opacity-60 text-sm">Visites virtuelles d'appartements de luxe à Kinshasa.</p>
+                </div>
+            </div>
+
+            <!-- Projet 4 -->
+            <div class="project-card group mt-0 md:mt-20 reveal-up">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop" class="project-img" alt="E-commerce">
+                <div class="project-overlay"></div>
+                <div class="project-info">
+                    <div class="flex gap-4 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">SHOPIFY PLUS</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">BRANDING</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">Luxe Kinshasa</h3>
+                    <p class="opacity-60 text-sm">Expérience e-commerce premium pour une marque de mode locale.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-60 pb-20 px-8 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full pointer-events-none opacity-10 mix-blend-screen">
+             <svg class="footer-logo-svg" viewBox="0 0 1400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="logo-path" d="M50 250 L150 50 L250 250 M100 150 L200 150" stroke="#3B82F6" stroke-width="10" stroke-linecap="square"/>
+                <path class="logo-path" d="M300 250 L300 50 M450 50 L375 150 L450 250 M300 150 L375 150" stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 0.5s"/>
+                <path class="logo-path" d="M500 250 L500 50 L650 250 L650 50" stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 1s"/>
+                <path class="logo-path" d="M700 250 L850 250 M700 50 L850 50 M700 150 L800 150 M700 50 L700 250" stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 1.5s"/>
+                <path class="logo-path" d="M900 50 L1050 50 M975 50 L975 250" stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 2s"/>
+                <path class="logo-path" d="M1100 250 L1100 50 M1175 150 L1100 250 M1175 150 L1100 50" stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 2.5s"/>
+            </svg>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-20 relative z-10">
+            <div>
+                <div class="text-6xl font-black font-title tracking-tighter mb-6">KINETIX<span class="text-blue-500">.</span></div>
+                <div class="text-[9px] font-mono tracking-[1em] opacity-40 uppercase text-blue-300">CODE_MOTION_MASTERY</div>
+            </div>
+            <div class="flex flex-col items-center md:items-end">
+                <a href="contact.html" class="text-2xl md:text-5xl font-black mb-12 italic uppercase text-white hover:text-blue-500 transition-colors tracking-tight">hello@kinetix.tech</a>
+                <div class="flex gap-12 font-mono text-[10px] tracking-[0.3em] opacity-60">
+                    <a href="#" class="hover:text-blue-500 transition-colors">LINKEDIN</a>
+                    <a href="#" class="hover:text-blue-500 transition-colors">INSTAGRAM</a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-40 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-12 font-mono text-[8px] tracking-[0.2em] opacity-30 relative z-10">
+            <div>© 2025 KINETIX AGENCY.</div>
+            <div class="mt-4 md:mt-0 tracking-[1em]">ENGINEERED_IN_KINSHASA</div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Preloader
+        const loadPerc = document.getElementById('load-perc');
+        const loadBar = document.getElementById('load-bar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if(progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
+            loadPerc.innerText = `${Math.floor(progress)}%`;
+            loadBar.style.width = `${progress}%`;
+        }, 30);
+
+        function startExperience() {
+            gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+        }
+
+        // BG 3D
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(800 * 3);
+        for(let i=0; i < 2400; i++) { positions[i] = (Math.random() - 0.5) * 15; }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 0.015, color: 0x3B82F6, transparent: true, opacity: 0.5 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        function animate() { requestAnimationFrame(animate); particles.rotation.y -= 0.0005; renderer.render(scene, camera); }
+        animate();
+
+        // Cursor
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+        });
+
+        // Animations
+        function initAnimations() {
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" });
+            });
+        }
+    </script>
+</body>
+</html>

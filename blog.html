@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIX | Flux Neural</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #3B82F6;
+            --bg: #05070A;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        .font-title {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.6s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .blog-img {
+            transition: transform 0.6s ease;
+            filter: grayscale(100%);
+        }
+
+        .blog-card:hover .blog-img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        /* Ticker Animation */
+        .ticker-wrap {
+            overflow: hidden;
+            height: 3rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #3B82F6;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Standard Kinetix CSS */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #custom-cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-difference: difference;
+        }
+
+        #cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transition: transform 0.15s ease-out;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .footer-logo-svg {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .footer-logo-svg:hover {
+            opacity: 0.8;
+        }
+
+        .logo-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLogo 5s ease-in-out forwards infinite alternate;
+        }
+
+        @keyframes drawLogo {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">DOWNLOADING_INTEL</div>
+        <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
+        <div class="loader-bar">
+            <div class="loader-progress" id="load-bar"></div>
+        </div>
+    </div>
+
+    <!-- UTILS -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAV (UPDATED WITH ALL LINKS) -->
+    <nav
+        class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-6 md:px-20 pointer-events-none mix-blend-difference">
+        <a href="index.html" class="text-2xl font-black font-title tracking-tighter pointer-events-auto group">
+            KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
+        </a>
+        <div class="hidden md:flex gap-8 items-center pointer-events-auto font-mono text-[9px] tracking-[0.2em]">
+            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
+            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
+            <a href="blog.html" class="text-blue-500">FLUX_NEURAL</a>
+            <a href="rejoindre.html" class="hover:text-blue-500 transition-colors">CARRIÈRES</a>
+            <a href="contact.html"
+                class="px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all">
+                INITIALISER
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO BLOG -->
+    <section class="relative pt-48 pb-12 px-8 md:px-24">
+        <div class="max-w-7xl">
+            <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8">// VEILLE_TECHNOLOGIQUE_MONDIALE
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black font-title leading-none tracking-tighter mb-12">
+                FLUX <br><span class="text-transparent outline-text"
+                    style="-webkit-text-stroke: 1px white;">NEURAL.</span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- LIVE TICKER -->
+    <div class="ticker-wrap mb-20 relative z-20">
+        <div class="ticker">
+            +++ ALERT: GPT-5 ANNONCÉ +++ NOUVEAU PROTOCOLE WEB3 DÉPLOYÉ À KINSHASA +++ KINETIX RECRUTE DES INGÉNIEURS
+            SENIOR +++ LE WEBGL DEVIENT LE STANDARD +++ GOOGLE UPDATE Q1 2026 +++
+            +++ ALERT: GPT-5 ANNONCÉ +++ NOUVEAU PROTOCOLE WEB3 DÉPLOYÉ À KINSHASA +++ KINETIX RECRUTE DES INGÉNIEURS
+            SENIOR +++ LE WEBGL DEVIENT LE STANDARD +++ GOOGLE UPDATE Q1 2026 +++
+        </div>
+    </div>
+
+    <!-- ARTICLES GRID -->
+    <section class="pb-40 px-8 md:px-24 relative z-10">
+        <!-- Featured Article -->
+        <div class="mb-20 glass p-0 rounded-[2rem] overflow-hidden group blog-card reveal-up cursor-pointer">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <div class="h-[400px] overflow-hidden relative">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop"
+                        class="blog-img w-full h-full object-cover" alt="AI Art">
+                    <div
+                        class="absolute top-6 left-6 bg-blue-500 text-black px-4 py-1 font-mono text-[9px] font-bold tracking-widest rounded-full">
+                        À LA UNE
+                    </div>
+                </div>
+                <div class="p-12 flex flex-col justify-center">
+                    <div class="flex items-center gap-4 mb-6 font-mono text-[9px] opacity-40 tracking-widest">
+                        <span>12 JAN 2025</span>
+                        <span>//</span>
+                        <span>INTELLIGENCE ARTIFICIELLE</span>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-6 group-hover:text-blue-500 transition-colors">L'IA générative
+                        va-t-elle remplacer les codeurs à Kinshasa ?</h2>
+                    <p class="opacity-60 text-sm leading-relaxed mb-8">
+                        Analyse profonde de l'impact de Copilot et ChatGPT sur l'écosystème tech congolais. Pourquoi
+                        l'humain reste l'architecte indispensable.
+                    </p>
+                    <span
+                        class="text-blue-500 font-mono text-xs tracking-widest border-b border-blue-500 self-start pb-1">LIRE
+                        LE DÉCRYPTAGE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standard Articles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Article 1 -->
+            <div class="glass rounded-3xl overflow-hidden blog-card group cursor-pointer reveal-up">
+                <div class="h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop"
+                        class="blog-img w-full h-full object-cover" alt="Cybersec">
+                </div>
+                <div class="p-8">
+                    <div class="font-mono text-[9px] text-emerald-500 tracking-widest mb-4">CYBERSÉCURITÉ</div>
+                    <h3 class="text-xl font-bold mb-4 leading-tight">Les banques RDC face aux nouvelles cyber-menaces
+                    </h3>
+                    <p class="text-xs opacity-50 mb-6 line-clamp-3">Comment sécuriser les infrastructures financières
+                        locales face aux attaques DDOS internationales.</p>
+                </div>
+            </div>
+
+            <!-- Article 2 -->
+            <div class="glass rounded-3xl overflow-hidden blog-card group cursor-pointer reveal-up"
+                style="transition-delay: 0.1s;">
+                <div class="h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+                        class="blog-img w-full h-full object-cover" alt="Tech">
+                </div>
+                <div class="p-8">
+                    <div class="font-mono text-[9px] text-blue-500 tracking-widest mb-4">TECH TRENDS</div>
+                    <h3 class="text-xl font-bold mb-4 leading-tight">Pourquoi React Native domine le marché mobile
+                        africain</h3>
+                    <p class="text-xs opacity-50 mb-6 line-clamp-3">Performance native, coût réduit. L'équation parfaite
+                        pour les startups de Kinshasa.</p>
+                </div>
+            </div>
+
+            <!-- Article 3 -->
+            <div class="glass rounded-3xl overflow-hidden blog-card group cursor-pointer reveal-up"
+                style="transition-delay: 0.2s;">
+                <div class="h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2032&auto=format&fit=crop"
+                        class="blog-img w-full h-full object-cover" alt="Crypto">
+                </div>
+                <div class="p-8">
+                    <div class="font-mono text-[9px] text-purple-500 tracking-widest mb-4">WEB3 & CRYPTO</div>
+                    <h3 class="text-xl font-bold mb-4 leading-tight">La tokenisation de l'immobilier à Gombe</h3>
+                    <p class="text-xs opacity-50 mb-6 line-clamp-3">Étude de cas sur notre projet Aether Capital et
+                        l'avenir de la blockchain.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-60 pb-20 px-8 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full pointer-events-none opacity-10 mix-blend-screen">
+            <svg class="footer-logo-svg" viewBox="0 0 1400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="logo-path" d="M50 250 L150 50 L250 250 M100 150 L200 150" stroke="#3B82F6"
+                    stroke-width="10" stroke-linecap="square" />
+                <path class="logo-path" d="M300 250 L300 50 M450 50 L375 150 L450 250 M300 150 L375 150"
+                    stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 0.5s" />
+            </svg>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-20 relative z-10">
+            <div>
+                <div class="text-6xl font-black font-title tracking-tighter mb-6">KINETIX<span
+                        class="text-blue-500">.</span></div>
+            </div>
+            <div class="flex flex-col items-center md:items-end">
+                <a href="contact.html"
+                    class="text-2xl md:text-5xl font-black mb-12 italic uppercase text-white hover:text-blue-500 transition-colors tracking-tight">hello@kinetix.tech</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Preloader Logic
+        const loadPerc = document.getElementById('load-perc');
+        const loadBar = document.getElementById('load-bar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
+            loadPerc.innerText = `${Math.floor(progress)}%`;
+            loadBar.style.width = `${progress}%`;
+        }, 30);
+        function startExperience() {
+            gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+        }
+
+        // BG 3D
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(800 * 3);
+        for (let i = 0; i < 2400; i++) { positions[i] = (Math.random() - 0.5) * 15; }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 0.015, color: 0x3B82F6, transparent: true, opacity: 0.4 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.0005; renderer.render(scene, camera); }
+        animate();
+
+        // Cursor & Scroll Animations
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+        });
+        function initAnimations() {
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" });
+            });
+        }
+    </script>
+</body>
+
+</html>

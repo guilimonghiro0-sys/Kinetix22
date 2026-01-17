@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIX | Initialiser la Mission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #3B82F6;
+            --bg: #05070A;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        .font-title {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        /* UI Elements */
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Form Specifics */
+        input,
+        textarea,
+        select {
+            color: #fff;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        select option {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Cursor & Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #custom-cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-difference: difference;
+        }
+
+        #cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transition: transform 0.15s ease-out;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Footer Animation */
+        .footer-logo-svg {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .footer-logo-svg:hover {
+            opacity: 0.8;
+        }
+
+        .logo-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLogo 5s ease-in-out forwards infinite alternate;
+        }
+
+        @keyframes drawLogo {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">ESTABLISHING_UPLINK</div>
+        <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
+        <div class="loader-bar">
+            <div class="loader-progress" id="load-bar"></div>
+        </div>
+    </div>
+
+    <!-- CURSORS -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <!-- BG -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAV -->
+    <nav
+        class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-6 md:px-20 pointer-events-none mix-blend-difference">
+        <a href="index.html" class="text-2xl font-black font-title tracking-tighter pointer-events-auto group">
+            KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
+        </a>
+        <div class="hidden md:flex gap-12 items-center pointer-events-auto font-mono text-[9px] tracking-[0.4em]">
+            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
+            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
+            <a href="apropos.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
+            <a href="contact.html"
+                class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
+                INITIALISER
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTACT INTERFACE -->
+    <section class="min-h-screen flex flex-col lg:flex-row pt-40 px-8 md:px-24 gap-20 relative z-10 pb-20">
+
+        <!-- Left Column: Status Info -->
+        <div class="lg:w-1/3 space-y-12 mt-12 reveal-up">
+            <div>
+                <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-4">// STATUT_LIGNE_SECURISEE</div>
+                <h1 class="text-5xl md:text-7xl font-black font-title tracking-tighter mb-6 leading-none">
+                    SIGNAL <br>PRÊT.
+                </h1>
+                <p class="opacity-50 text-sm max-w-sm leading-relaxed">
+                    Nos ingénieurs sont en veille active. Décrivez votre vision, nous calculerons la trajectoire
+                    optimale pour votre déploiement numérique.
+                </p>
+            </div>
+
+            <div class="space-y-8 font-mono text-xs tracking-widest border-l border-white/10 pl-8">
+                <div class="group cursor-pointer">
+                    <div class="opacity-40 mb-2">QG OPÉRATIONNEL</div>
+                    <div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> KINSHASA, GOMBE, RDC
+                    </div>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="opacity-40 mb-2">CANAL DIRECT</div>
+                    <div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2">
+                        <i data-lucide="mail" class="w-4 h-4"></i> HELLO@KINETIX.TECH
+                    </div>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="opacity-40 mb-2">LIGNE D'URGENCE</div>
+                    <div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2">
+                        <i data-lucide="phone" class="w-4 h-4"></i> +243 81 000 0000
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: The Form Terminal -->
+        <div class="lg:w-2/3 reveal-up" style="transition-delay: 0.2s">
+            <form
+                class="glass p-8 md:p-12 rounded-[2rem] space-y-8 border border-white/5 relative overflow-hidden group">
+
+                <!-- Noise Overlay Effect -->
+                <div
+                    class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay">
+                </div>
+                <div class="absolute top-0 right-0 p-6 opacity-30">
+                    <i data-lucide="wifi" class="w-6 h-6 animate-pulse text-emerald-500"></i>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2 relative z-10">
+                        <label
+                            class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2">
+                            <span class="w-1 h-1 bg-blue-500 rounded-full"></span> Identifiant (Nom)
+                        </label>
+                        <input type="text"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono"
+                            placeholder="Ex: John Doe">
+                    </div>
+                    <div class="space-y-2 relative z-10">
+                        <label
+                            class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2">
+                            <span class="w-1 h-1 bg-blue-500 rounded-full"></span> Fréquence (Email)
+                        </label>
+                        <input type="email"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono"
+                            placeholder="Ex: john@company.com">
+                    </div>
+                </div>
+
+                <div class="space-y-2 relative z-10">
+                    <label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2">
+                        <span class="w-1 h-1 bg-blue-500 rounded-full"></span> Type de Mission
+                    </label>
+                    <select
+                        class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono cursor-pointer appearance-none">
+                        <option>Développement Web Cinématique</option>
+                        <option>Application Mobile Native</option>
+                        <option>Architecture Backend / API</option>
+                        <option>Branding & Design 3D</option>
+                        <option>Consulting Technique</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2 relative z-10">
+                    <label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2">
+                        <span class="w-1 h-1 bg-blue-500 rounded-full"></span> Données de la Mission
+                    </label>
+                    <textarea rows="5"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono resize-none"
+                        placeholder="Décrivez vos objectifs, votre budget estimé et votre timeline..."></textarea>
+                </div>
+
+                <button
+                    class="w-full py-6 bg-blue-500 hover:bg-white hover:text-black text-white font-bold tracking-widest rounded-xl transition-all uppercase font-title text-sm md:text-lg flex justify-center items-center gap-4 group relative z-10 overflow-hidden">
+                    <span class="relative z-10">Transmettre les données</span>
+                    <i data-lucide="send"
+                        class="w-4 h-4 group-hover:translate-x-2 transition-transform relative z-10"></i>
+                    <div
+                        class="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ease-out duration-300">
+                    </div>
+                </button>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-40 pb-20 px-8 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full pointer-events-none opacity-10 mix-blend-screen">
+            <svg class="footer-logo-svg" viewBox="0 0 1400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="logo-path" d="M50 250 L150 50 L250 250 M100 150 L200 150" stroke="#3B82F6"
+                    stroke-width="10" stroke-linecap="square" />
+                <path class="logo-path" d="M300 250 L300 50 M450 50 L375 150 L450 250 M300 150 L375 150"
+                    stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 0.5s" />
+                <path class="logo-path" d="M500 250 L500 50 L650 250 L650 50" stroke="#3B82F6" stroke-width="10"
+                    stroke-linecap="square" style="animation-delay: 1s" />
+                <path class="logo-path" d="M700 250 L850 250 M700 50 L850 50 M700 150 L800 150 M700 50 L700 250"
+                    stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 1.5s" />
+                <path class="logo-path" d="M900 50 L1050 50 M975 50 L975 250" stroke="#3B82F6" stroke-width="10"
+                    stroke-linecap="square" style="animation-delay: 2s" />
+                <path class="logo-path" d="M1100 250 L1100 50 M1175 150 L1100 250 M1175 150 L1100 50" stroke="#3B82F6"
+                    stroke-width="10" stroke-linecap="square" style="animation-delay: 2.5s" />
+            </svg>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-20 relative z-10">
+            <div>
+                <div class="text-6xl font-black font-title tracking-tighter mb-6">KINETIX<span
+                        class="text-blue-500">.</span></div>
+                <div class="text-[9px] font-mono tracking-[1em] opacity-40 uppercase text-blue-300">CODE_MOTION_MASTERY
+                </div>
+            </div>
+            <div class="flex flex-col items-center md:items-end">
+                <a href="mailto:hello@kinetix.tech"
+                    class="text-2xl md:text-5xl font-black mb-12 italic uppercase text-white hover:text-blue-500 transition-colors tracking-tight">hello@kinetix.tech</a>
+                <div class="flex gap-12 font-mono text-[10px] tracking-[0.3em] opacity-60">
+                    <a href="#" class="hover:text-blue-500 transition-colors">LINKEDIN</a>
+                    <a href="#" class="hover:text-blue-500 transition-colors">INSTAGRAM</a>
+                </div>
+            </div>
+        </div>
+        <div
+            class="mt-40 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-12 font-mono text-[8px] tracking-[0.2em] opacity-30 relative z-10">
+            <div>© 2025 KINETIX AGENCY.</div>
+            <div class="mt-4 md:mt-0 tracking-[1em]">ENGINEERED_IN_KINSHASA</div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Preloader
+        const loadPerc = document.getElementById('load-perc');
+        const loadBar = document.getElementById('load-bar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
+            loadPerc.innerText = `${Math.floor(progress)}%`;
+            loadBar.style.width = `${progress}%`;
+        }, 30);
+
+        function startExperience() {
+            gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+        }
+
+        // BG 3D (Subtle Movement)
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(600 * 3);
+        for (let i = 0; i < 1800; i++) { positions[i] = (Math.random() - 0.5) * 15; }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 0.015, color: 0x3B82F6, transparent: true, opacity: 0.4 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.0002; renderer.render(scene, camera); }
+        animate();
+
+        // Cursor
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+        });
+
+        // Animations
+        function initAnimations() {
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" });
+            });
+        }
+    </script>
+</body>
+
+</html>

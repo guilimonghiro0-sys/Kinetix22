@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIX | L'Elite Digitale de Kinshasa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #3B82F6;
+            --emerald: #10B981;
+            --bg: #05070A;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        .font-title {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        /* UI Elements */
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .text-reveal {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .char {
+            display: inline-block;
+            transform: translateY(110%);
+        }
+
+        .glare-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glare-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            mix-blend-overlay: overlay;
+        }
+
+        .glare-card:hover::after {
+            opacity: 1;
+        }
+
+        /* Nexus Item */
+        .nexus-item {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 2rem;
+        }
+
+        .nexus-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+            filter: grayscale(100%) contrast(120%);
+        }
+
+        .nexus-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg), transparent);
+            opacity: 0.6;
+            transition: opacity 0.5s ease;
+        }
+
+        .nexus-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 3rem;
+            z-index: 10;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .nexus-item:hover .nexus-img {
+            transform: scale(1.1);
+            filter: grayscale(0%) contrast(100%);
+        }
+
+        .nexus-item:hover .nexus-overlay {
+            opacity: 0.2;
+        }
+
+        .nexus-item:hover .nexus-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Utils */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #custom-cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-difference: difference;
+        }
+
+        #cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transition: transform 0.15s ease-out;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .footer-logo-svg {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLogo 5s ease-in-out forwards infinite alternate;
+        }
+
+        @keyframes drawLogo {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .logo-path-delayed {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">INITIALIZING_KINETIX_ENGINE</div>
+        <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
+        <div class="loader-bar">
+            <div class="loader-progress" id="load-bar"></div>
+        </div>
+    </div>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAVIGATION COMPLETE -->
+    <nav
+        class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-8 md:px-16 mix-blend-difference text-white">
+        <a href="index.html" class="group cursor-pointer flex items-start gap-1 select-none">
+            <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">&lt;\</span>
+            <span class="text-2xl font-black font-title tracking-tighter leading-none">
+                KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
+            </span>
+            <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">/&gt;</span>
+        </a>
+        <div class="hidden xl:flex gap-8 items-center pointer-events-auto font-mono text-[9px] tracking-[0.2em]">
+            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
+            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
+            <a href="valeurs.html" class="hover:text-blue-500 transition-colors">LE_CODE</a>
+            <a href="blog.html" class="hover:text-blue-500 transition-colors">FLUX</a>
+            <a href="apropos.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
+            <a href="zen_mode.html"
+                class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-text-white transition-all transform hover:scale-105 active:scale-95"></a>
+            <a href="contact.html"
+                class="px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
+                CONTACT
+            </a>
+        </div>
+        <!-- Mobile Menu Placeholder (Hamburger would go here) -->
+        <div class="xl:hidden pointer-events-auto text-xs font-mono">MENU +</div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="relative h-screen flex flex-col justify-center px-8 md:px-24 overflow-hidden">
+        <div class="absolute top-1/4 left-0 w-full h-full pointer-events-none opacity-10">
+            <h1 class="text-[20vw] font-black font-title leading-none outline-text"
+                style="-webkit-text-stroke: 1px white; color: transparent;">KINETIX</h1>
+        </div>
+        <div class="max-w-7xl relative z-10">
+            <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8 overflow-hidden">
+                <span class="inline-block translate-y-full" id="hero-tag">// L'ÉLITE_DIGITALE_DE_KINSHASA</span>
+            </div>
+            <h1 class="text-6xl md:text-[11rem] font-black font-title leading-[0.8] tracking-tighter mb-12">
+                <div class="text-reveal"><span class="char">BEYOND</span></div>
+                <div class="text-reveal"><span class="char text-blue-500">LIMITS.</span></div>
+            </h1>
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-12 opacity-0" id="hero-sub">
+                <p class="text-lg md:text-2xl font-light opacity-50 max-w-lg leading-relaxed italic">
+                    "Nous architecturons le futur numérique de la RDC. Pas de templates. Pas de limites. Juste du code
+                    pur et de l'émotion."
+                </p>
+                <a href="projets.html"
+                    class="px-8 py-4 border border-white/20 hover:border-blue-500 hover:bg-blue-500/10 rounded-full transition-all font-mono text-xs tracking-widest uppercase">
+                    Explorer le Nexus
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTENAIRES -->
+    <div class="flex flex-wrap items-center gap-12 md:gap-20">
+
+        <!-- Logo 1 -->
+        <img src="images/WEACT.png" alt="WE_ACT" class="partner-logo">
+
+        <!-- Logo 2 -->
+        <img src="images/TALKBYEZER.png" alt="TALK_BY_EZER" class="partner-logo">
+
+        <!-- Logo 3 -->
+        <img src="images/RAWBANK.png" alt="RAWBANK" class="partner-logo">
+
+        <!-- Logo 4 -->
+        <div class="partner-logo font-title font-bold text-xl text-gray-400 border border-gray-600 p-2 rounded">
+            CLIENT_RDC
+        </div>
+
+    </div>
+    </div>
+    <!-- --- FIN SECTION PARTENAIRES --- -->
+    <!-- SERVICES PREVIEW -->
+    <section class="py-40 px-8 md:px-24 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-32 items-start mb-32">
+            <div class="sticky top-40">
+                <h2 class="text-blue-500 font-mono text-[10px] tracking-[0.6em] mb-6 uppercase reveal-side">Nos Armes
+                    Digitales</h2>
+                <h3 class="text-5xl md:text-7xl font-black font-title tracking-tighter leading-none mb-12 reveal-side">
+                    L'ART DU <br /><span class="text-blue-500">MOUVEMENT.</span>
+                </h3>
+                <p class="text-xl opacity-40 leading-relaxed max-w-md reveal-side">
+                    Chaque pixel est orchestré. Chaque interaction est une émotion. Nous fusionnons la force brute du
+                    code et la poésie du design.
+                </p>
+                <a href="services.html"
+                    class="inline-block mt-8 text-sm font-mono tracking-widest text-blue-500 hover:text-white transition-colors reveal-side">
+                    VOIR LES SCHÉMAS TECHNIQUES →
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-8">
+                <div
+                    class="glass glare-card p-12 rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
+                    <div class="flex justify-between items-center mb-10">
+                        <i data-lucide="monitor-play" class="w-8 h-8 text-blue-500"></i>
+                        <span class="font-mono text-[9px] opacity-30">01_WEB_CINEMATIC</span>
+                    </div>
+                    <h4 class="text-3xl font-bold mb-4">Sites Immersifs</h4>
+                    <p class="text-sm opacity-50 leading-relaxed">WebGL et GSAP pour des expériences fluides à 120fps.
+                    </p>
+                </div>
+
+                <div
+                    class="glass glare-card p-12 rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
+                    <div class="flex justify-between items-center mb-10">
+                        <i data-lucide="smartphone" class="w-8 h-8 text-blue-500"></i>
+                        <span class="font-mono text-[9px] opacity-30">02_MOBILE_ELITE</span>
+                    </div>
+                    <h4 class="text-3xl font-bold mb-4">Apps Natives</h4>
+                    <p class="text-sm opacity-50 leading-relaxed">iOS et Android. Des interactions tactiles qui semblent
+                        naturelles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-8 md:px-24">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+
+            <!-- Colonne 1 : Logo & Info -->
+            <div class="col-span-1 md:col-span-2">
+                <a href="index.html" class="block mb-6">
+                    <span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span
+                            class="text-blue-500">.</span></span>
+                </a>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
+                    Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur
+                    marché grâce à la technologie.
+                </p>
+            </div>
+
+            <!-- Colonne 2 : Liens -->
+            <div>
+                <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4>
+                <ul class="space-y-4 text-sm text-gray-400 font-mono">
+                    <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
+                    <li><a href="apropos.html" class="hover:text-white transition-colors">L'Agence</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Carrières</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Mentions Légales</a></li>
+                </ul>
+            </div>
+
+            <!-- Colonne 3 : Social (Icônes) -->
+            <div>
+                <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4>
+                <div class="flex gap-4">
+                    <!-- LinkedIn -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
+                        <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 group-hover:text-white"></i>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all">
+                        <i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <!-- Twitter / X -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                        <i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <!-- WhatsApp -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
+                        <i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                </div>
+                <div class="mt-6">
+                    <p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p>
+                    <p class="text-[10px] font-mono text-gray-600 uppercase">+243 900 260 394</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div
+            class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
+            <p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p>
+            <p>Designed by Guili MONGHIRO</p>
+        </div>
+    </footer>
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        const loadPerc = document.getElementById('load-perc');
+        const loadBar = document.getElementById('load-bar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 4;
+            if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
+            loadPerc.innerText = `${Math.floor(progress)}%`;
+            loadBar.style.width = `${progress}%`;
+        }, 40);
+
+        function startExperience() {
+            gsap.to("#preloader", { opacity: 0, duration: 1.2, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+        }
+
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(3600);
+        for (let i = 0; i < 3600; i++) { positions[i] = (Math.random() - 0.5) * 15; }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 0.012, color: 0x3B82F6, transparent: true, opacity: 0.7 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        let mouseX = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = (e.clientX / window.innerWidth - 0.5) * 2; });
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.y += 0.0008;
+            particles.position.x += (mouseX * 0.4 - particles.position.x) * 0.05;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+        });
+
+        function initAnimations() {
+            const tl = gsap.timeline();
+            tl.to("#hero-tag", { y: 0, duration: 1, ease: "expo.out" })
+                .to(".char", { y: 0, stagger: 0.05, duration: 1.5, ease: "expo.out" }, "-=0.5")
+                .to("#hero-sub", { opacity: 1, y: 0, duration: 1.5 }, "-=1");
+
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 80, opacity: 0, duration: 1.2, ease: "power3.out" });
+            });
+            gsap.utils.toArray('.reveal-side').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, x: -50, opacity: 0, duration: 1.2, ease: "power3.out" });
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIX | La Matrice (Services)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #3B82F6;
+            --bg: #05070A;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        .font-title {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* BLUEPRINT STYLES */
+        .blueprint-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            background-image: radial-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(59, 130, 246, 0.02);
+        }
+
+        .schematic-web {
+            width: 160px;
+            height: 100px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .schematic-web::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            width: 40px;
+            height: 10px;
+            background: var(--primary);
+            opacity: 0.5;
+        }
+
+        .schematic-phone {
+            width: 70px;
+            height: 140px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .schematic-phone::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        /* Utils */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #custom-cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: difference;
+        }
+
+        #cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transition: transform 0.15s ease-out;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .footer-logo-svg {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLogo 5s ease-in-out forwards infinite alternate;
+        }
+
+        @keyframes drawLogo {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">LOADING_BLUEPRINTS</div>
+        <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
+        <div class="loader-bar">
+            <div class="loader-progress" id="load-bar"></div>
+        </div>
+    </div>
+
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAV -->
+    <nav
+        class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-6 md:px-12 pointer-events-none mix-blend-difference">
+        <a href="index.html" class="text-2xl font-black font-title tracking-tighter pointer-events-auto group">
+            KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
+        </a>
+        <div class="hidden xl:flex gap-8 items-center pointer-events-auto font-mono text-[9px] tracking-[0.2em]">
+            <a href="services.html" class="text-blue-500">MATRICE</a>
+            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
+            <a href="valeurs.html" class="hover:text-blue-500 transition-colors">LE_CODE</a>
+            <a href="blog.html" class="hover:text-blue-500 transition-colors">FLUX</a>
+            <a href="apropos.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
+            <a href="contact.html"
+                class="px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
+                INITIALISER
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="pt-48 pb-20 px-8 md:px-24">
+        <div class="max-w-7xl">
+            <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8">// ARCHITECTURE_DÉTAILLÉE</div>
+            <h1 class="text-6xl md:text-9xl font-black font-title leading-none tracking-tighter mb-12">
+                LA MATRICE <br><span class="text-transparent outline-text"
+                    style="-webkit-text-stroke: 1px white;">D'INTERVENTION.</span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- SERVICES BLUEPRINT -->
+    <section class="pb-40 px-8 md:px-24 relative z-10 space-y-32">
+
+        <!-- SERVICE 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-up">
+            <div class="order-2 lg:order-1">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="font-mono text-4xl font-black text-blue-500 opacity-20">01</span>
+                    <h2 class="text-4xl font-bold">Web Cinématique</h2>
+                </div>
+                <p class="text-lg opacity-70 mb-8 leading-relaxed">
+                    Nous ne faisons pas de sites statiques. Nous créons des univers immersifs qui retiennent
+                    l'attention.
+                </p>
+                <ul class="space-y-6">
+                    <li class="flex gap-4">
+                        <div class="w-1 h-full bg-blue-500"></div>
+                        <div>
+                            <h4 class="font-bold">WebGL & 3D Interactive</h4>
+                            <p class="text-xs opacity-50 mt-1">Intégration d'objets 3D et animations GSAP.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="w-1 h-full bg-blue-500"></div>
+                        <div>
+                            <h4 class="font-bold">Performance SPA</h4>
+                            <p class="text-xs opacity-50 mt-1">Sites React/Next.js sans rechargement.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- Illustration Blueprint Web -->
+            <div class="order-1 lg:order-2 blueprint-container rounded-2xl">
+                <div class="schematic-web absolute"></div>
+                <div class="absolute font-mono text-[9px] text-blue-500 bottom-4 right-4">FIG_1.0: DOM_STRUCTURE</div>
+                <div class="absolute w-full h-[1px] bg-blue-500/20 top-1/2"></div>
+                <div class="absolute h-full w-[1px] bg-blue-500/20 left-1/2"></div>
+            </div>
+        </div>
+
+        <!-- SERVICE 2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-up">
+            <div class="blueprint-container rounded-2xl">
+                <div class="schematic-phone absolute"></div>
+                <div
+                    class="absolute w-2 h-2 bg-blue-500 rounded-full animate-ping top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                </div>
+                <div class="absolute font-mono text-[9px] text-blue-500 bottom-4 right-4">FIG_2.0: REACT_NATIVE</div>
+            </div>
+            <div>
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="font-mono text-4xl font-black text-blue-500 opacity-20">02</span>
+                    <h2 class="text-4xl font-bold">Apps Mobiles Natives</h2>
+                </div>
+                <p class="text-lg opacity-70 mb-8 leading-relaxed">
+                    Votre entreprise dans la poche de chaque Congolais.
+                </p>
+                <ul class="space-y-6">
+                    <li class="flex gap-4">
+                        <div class="w-1 h-full bg-blue-500"></div>
+                        <div>
+                            <h4 class="font-bold">Cross-Platform (iOS/Android)</h4>
+                            <p class="text-xs opacity-50 mt-1">Un code unique, déploiement double.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="w-1 h-full bg-blue-500"></div>
+                        <div>
+                            <h4 class="font-bold">Mode Hors-Ligne</h4>
+                            <p class="text-xs opacity-50 mt-1">Fonctionne même sans connexion internet.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-20 pb-10 px-8 border-t border-white/5 text-center">
+        <div class="flex flex-col items-center">
+            <div class="text-4xl font-black font-title tracking-tighter mb-4">KINETIX<span
+                    class="text-blue-500">.</span></div>
+            <div class="mt-8 opacity-20 font-mono text-[8px]">© 2026 KINETIX AGENCY.</div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        const loadPerc = document.getElementById('load-perc');
+        const loadBar = document.getElementById('load-bar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
+            loadPerc.innerText = `${Math.floor(progress)}%`;
+            loadBar.style.width = `${progress}%`;
+        }, 30);
+
+        function startExperience() {
+            gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+        }
+
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(2400);
+        for (let i = 0; i < 2400; i++) { positions[i] = (Math.random() - 0.5) * 15; }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 0.015, color: 0x3B82F6, transparent: true, opacity: 0.4 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.0005; renderer.render(scene, camera); }
+        animate();
+
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+        });
+
+        function initAnimations() {
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" });
+            });
+        }
+    </script>
+</body>
+
+</html>
