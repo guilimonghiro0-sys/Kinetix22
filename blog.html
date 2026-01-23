@@ -316,24 +316,69 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="pt-60 pb-20 px-8 border-t border-white/5 relative overflow-hidden">
-        <div class="absolute bottom-0 left-0 w-full pointer-events-none opacity-10 mix-blend-screen">
-            <svg class="footer-logo-svg" viewBox="0 0 1400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path class="logo-path" d="M50 250 L150 50 L250 250 M100 150 L200 150" stroke="#3B82F6"
-                    stroke-width="10" stroke-linecap="square" />
-                <path class="logo-path" d="M300 250 L300 50 M450 50 L375 150 L450 250 M300 150 L375 150"
-                    stroke="#3B82F6" stroke-width="10" stroke-linecap="square" style="animation-delay: 0.5s" />
-            </svg>
-        </div>
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-20 relative z-10">
+  <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-8 md:px-24">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+
+            <!-- Colonne 1 : Logo & Info -->
+            <div class="col-span-1 md:col-span-2">
+                <a href="index.html" class="block mb-6">
+                    <span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span
+                            class="text-blue-500">.</span></span>
+                </a>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
+                    Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur
+                    marché grâce à la technologie.
+                </p>
+            </div>
+
+            <!-- Colonne 2 : Liens -->
             <div>
-                <div class="text-6xl font-black font-title tracking-tighter mb-6">KINETIX<span
-                        class="text-blue-500">.</span></div>
+                <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4>
+                <ul class="space-y-4 text-sm text-gray-400 font-mono">
+                    <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
+                    <li><a href="about.html" class="hover:text-white transition-colors">L'Agence</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Carrières</a></li>
+                    <li><a href="mentions.html" class="hover:text-white transition-colors">Mentions Légales</a></li>
+                </ul>
             </div>
-            <div class="flex flex-col items-center md:items-end">
-                <a href="contact.html"
-                    class="text-2xl md:text-5xl font-black mb-12 italic uppercase text-white hover:text-blue-500 transition-colors tracking-tight">hello@kinetix.tech</a>
+
+            <!-- Colonne 3 : Social (Icônes) -->
+            <div>
+                <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4>
+                <div class="flex gap-4">
+                    <!-- LinkedIn -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
+                        <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 group-hover:text-white"></i>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all">
+                        <i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <!-- Twitter / X -->
+                    <a href="#"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                        <i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <!-- WhatsApp -->
+                    <a href="https://www.wa.me/243900260394"
+                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
+                        <i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                </div>
+                <div class="mt-6">
+                    <p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p>
+                    <p class="text-[10px] font-mono text-gray-600 uppercase">+243 900 260 394</p>
+                </div>
             </div>
+        </div>
+
+        <!-- Copyright -->
+        <div
+            class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
+            <p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p>
+            <p>Designed by Guili MONGHIRO</p>
         </div>
     </footer>
 
