@@ -1,221 +1,105 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KINETIX | Le Lab (Histoire)</title>
+    <meta name="description" content="L'histoire de Kinetix — une obsession pour la perfection numérique née à Kinshasa.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
-
-        :root {
-            --primary: #3B82F6;
-            --emerald: #10B981;
-            --bg: #05070A;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            cursor: none;
-        }
-
-        .font-title {
-            font-family: 'Syncopate', sans-serif;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains+Mono', monospace;
-        }
-
-        /* UI Elements */
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Timeline Specific Styles */
-        .timeline-line {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: linear-gradient(to bottom, transparent, #3B82F6, transparent);
-        }
-
-        .timeline-point {
-            position: absolute;
-            left: -4px;
-            width: 9px;
-            height: 9px;
-            background: #05070A;
-            border: 1px solid #3B82F6;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-        }
-
-        /* Team Card */
-        .team-img-wrapper {
-            overflow: hidden;
-            border-radius: 1.5rem;
-            position: relative;
-        }
-
-        .team-img {
-            transition: transform 0.5s ease;
-            filter: grayscale(100%);
-        }
-
-        .team-card:hover .team-img {
-            transform: scale(1.1);
-            filter: grayscale(0%);
-        }
-
-        /* Cursor & Preloader */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loader-bar {
-            width: 200px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .loader-progress {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0%;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        #custom-cursor {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: #fff;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            mix-blend-difference: difference;
-        }
-
-        #cursor-follower {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99998;
-            transition: transform 0.15s ease-out;
-        }
-
-        #webgl-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            opacity: 0.6;
-        }
-
-        /* Footer Animation */
-        .footer-logo-svg {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            opacity: 0.3;
-            transition: opacity 0.5s ease;
-        }
-
-        .footer-logo-svg:hover {
-            opacity: 0.8;
-        }
-
-        .logo-path {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: drawLogo 5s ease-in-out forwards infinite alternate;
-        }
-
-        @keyframes drawLogo {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
+        :root { --primary: #3B82F6; --emerald: #10B981; --bg: #05070A; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+        .font-title { font-family: 'Syncopate', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(255,255,255,0.02); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+        .timeline-line { position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, #3B82F6, transparent); }
+        .timeline-point { position: absolute; left: -4px; width: 9px; height: 9px; background: #05070A; border: 1px solid #3B82F6; border-radius: 50%; box-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .team-img-wrapper { overflow: hidden; border-radius: 1.5rem; position: relative; }
+        .team-img { transition: transform 0.5s ease; filter: grayscale(100%); }
+        .team-card:hover .team-img { transform: scale(1.1); filter: grayscale(0%); }
+        #preloader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 20px; }
+        .loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        #custom-cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 99999; mix-blend-mode: difference; }
+        #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 99998; transition: transform 0.15s ease-out; }
+        #webgl-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
+        #mobile-menu { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); will-change: transform; }
+        #mobile-menu.open { transform: translateX(0); }
+        .nav-link.active-page { color: #3B82F6 !important; pointer-events: none; }
+        .mobile-nav-link.active-page { color: #3B82F6 !important; }
+        #mobile-menu .relative.z-10 a { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease, color 0.2s ease; }
+        #mobile-menu.open .relative.z-10 a { opacity: 1; transform: translateY(0); }
+        #mobile-menu.open .relative.z-10 a:nth-child(1) { transition-delay: 0.08s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(2) { transition-delay: 0.13s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(3) { transition-delay: 0.18s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(4) { transition-delay: 0.23s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(5) { transition-delay: 0.28s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(6) { transition-delay: 0.33s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(7) { transition-delay: 0.38s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(8) { transition-delay: 0.43s; }
     </style>
 </head>
-
 <body>
-
-    <!-- PRELOADER -->
     <div id="preloader">
         <div class="font-title text-xs tracking-[1em] opacity-50 mb-4">DECRYPTING_DATA</div>
         <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
-        <div class="loader-bar">
-            <div class="loader-progress" id="load-bar"></div>
+        <div class="loader-bar"><div class="loader-progress" id="load-bar"></div></div>
+    </div>
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NAV UNIVERSEL -->
+    <nav id="kinetix-nav" class="fixed top-0 w-full z-[100] flex justify-between items-center px-6 py-6 md:px-16 mix-blend-difference text-white">
+        <a href="index.html" class="group cursor-pointer flex items-start gap-1 select-none z-[101]">
+            <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">&lt;</span>
+            <span class="text-xl md:text-2xl font-black font-title tracking-tighter leading-none">KINETIX<span class="text-blue-500 inline-block">.</span></span>
+            <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">/&gt;</span>
+        </a>
+        <div class="hidden xl:flex gap-8 items-center pointer-events-auto font-mono text-[9px] tracking-[0.2em]">
+            <a href="services.html"  class="nav-link hover:text-blue-500 transition-colors" data-page="services">MATRICE</a>
+            <a href="projets.html"   class="nav-link hover:text-blue-500 transition-colors" data-page="projets">NEXUS</a>
+            <a href="valeurs.html"   class="nav-link hover:text-blue-500 transition-colors" data-page="valeurs">LE_CODE</a>
+            <a href="blog.html"      class="nav-link hover:text-blue-500 transition-colors" data-page="blog">FLUX</a>
+            <a href="about.html"     class="nav-link hover:text-blue-500 transition-colors" data-page="about">LE_LAB</a>
+            <a href="rejoindre.html" class="nav-link hover:text-blue-500 transition-colors" data-page="rejoindre">CARRIÈRES</a>
+            <a href="contact.html"   class="nav-link px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95" data-page="contact">INITIALISER</a>
+        </div>
+        <button id="menu-btn" class="xl:hidden pointer-events-auto text-xs font-mono z-[101] flex items-center gap-2 group cursor-pointer" onclick="toggleMenu()" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span id="menu-text" class="group-hover:text-blue-500 transition-colors font-bold tracking-widest">MENU +</span>
+        </button>
+    </nav>
+    <div id="mobile-menu" class="fixed inset-0 bg-[#020305] z-[90] flex flex-col justify-center items-center xl:hidden text-center" aria-hidden="true">
+        <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(59,130,246,0.15) 1px, transparent 1px); background-size: 28px 28px;"></div>
+        <div class="relative z-10 flex flex-col gap-8 font-title text-2xl font-bold">
+            <a href="index.html"     class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="index"     onclick="toggleMenu()">ACCUEIL</a>
+            <a href="services.html"  class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="services"  onclick="toggleMenu()">MATRICE</a>
+            <a href="projets.html"   class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="projets"   onclick="toggleMenu()">NEXUS</a>
+            <a href="valeurs.html"   class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="valeurs"   onclick="toggleMenu()">LE_CODE</a>
+            <a href="blog.html"      class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="blog"      onclick="toggleMenu()">FLUX_NEURAL</a>
+            <a href="about.html"     class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="about"     onclick="toggleMenu()">LE_LAB</a>
+            <a href="rejoindre.html" class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="rejoindre" onclick="toggleMenu()">CARRIÈRES</a>
+            <a href="contact.html"   class="mobile-nav-link text-sm font-mono border border-white/20 px-8 py-3 rounded-full mt-2 hover:border-blue-500 hover:text-blue-500 transition-all" data-page="contact" onclick="toggleMenu()">INITIALISER LA MISSION</a>
+        </div>
+        <div class="absolute bottom-10 text-center opacity-30 font-mono text-[10px] tracking-widest">
+            <div>KINSHASA • RDC</div><div class="mt-1">+243 900 260 394</div>
         </div>
     </div>
 
-    <!-- CURSORS -->
-    <div id="custom-cursor"></div>
-    <div id="cursor-follower"></div>
-
-    <!-- BG -->
-    <canvas id="webgl-canvas"></canvas>
-
-    <!-- NAV -->
-    <nav
-        class="fixed top-0 w-full z-[100] flex justify-between items-center px-8 py-6 md:px-20 pointer-events-none mix-blend-difference">
-        <a href="index.html" class="text-2xl font-black font-title tracking-tighter pointer-events-auto group">
-            KINETIX<span class="text-blue-500 group-hover:animate-ping inline-block">.</span>
-        </a>
-        <div class="hidden md:flex gap-12 items-center pointer-events-auto font-mono text-[9px] tracking-[0.4em]">
-            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
-            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
-            <a href="about.html" class="text-blue-500">LE_LAB</a>
-            <a href="contact.html"
-                class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
-                INITIALISER
-            </a>
-        </div>
-    </nav>
-
-    <!-- HERO A PROPOS -->
+    <!-- HERO -->
     <section class="relative pt-48 pb-20 px-8 md:px-24">
         <div class="max-w-7xl">
             <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8">// LE_LABORATOIRE_CENTRAL</div>
-            <h1 class="text-6xl md:text-8xl font-black font-title leading-none tracking-tighter mb-12">
-                L'ORIGINE DU <br><span class="text-transparent outline-text"
-                    style="-webkit-text-stroke: 1px white;">CODE.</span>
+            <h1 class="text-5xl sm:text-6xl md:text-8xl font-black font-title leading-none tracking-tighter mb-12">
+                L'ORIGINE DU <br><span class="text-transparent" style="-webkit-text-stroke: 1px white;">CODE.</span>
             </h1>
             <p class="text-xl opacity-60 max-w-2xl leading-relaxed">
-                Kinetix n'est pas né dans une salle de réunion climatisée, mais devant un écran noir à 3h du matin.
-                C'est l'histoire d'une obsession pour la perfection numérique à Kinshasa.
+                Kinetix n'est pas né dans une salle de réunion climatisée, mais devant un écran noir à 3h du matin. C'est l'histoire d'une obsession pour la perfection numérique à Kinshasa.
             </p>
         </div>
     </section>
@@ -223,105 +107,71 @@
     <!-- HISTOIRE / TIMELINE -->
     <section class="py-20 px-8 md:px-24 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-
-            <!-- Image d'ambiance -->
             <div class="relative group">
-                <div
-                    class="absolute inset-0 bg-blue-500/20 blur-[50px] opacity-20 group-hover:opacity-40 transition-opacity">
-                </div>
+                <div class="absolute inset-0 bg-blue-500/20 blur-[50px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
                 <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
-                    class="rounded-[2rem] opacity-60 grayscale hover:grayscale-0 transition-all duration-700 w-full relative z-10 border border-white/5"
-                    alt="Bureau Kinetix">
-                <div
-                    class="absolute bottom-10 left-10 z-20 font-mono text-xs tracking-widest bg-black/50 backdrop-blur px-4 py-2 rounded border border-white/10">
-                    HQ_GOMBE // ZONE_DE_DEV
-                </div>
+                    class="rounded-[2rem] opacity-60 grayscale hover:grayscale-0 transition-all duration-700 w-full relative z-10 border border-white/5" alt="Bureau Kinetix">
+                <div class="absolute bottom-10 left-10 z-20 font-mono text-xs tracking-widest bg-black/50 backdrop-blur px-4 py-2 rounded border border-white/10">HQ_GOMBE // ZONE_DE_DEV</div>
             </div>
-
-            <!-- La Timeline Verticale -->
             <div class="relative pl-10 space-y-20">
                 <div class="timeline-line"></div>
-
-                <!-- Date 1 -->
                 <div class="relative reveal-up">
                     <div class="timeline-point" style="top: 8px;"></div>
                     <span class="font-mono text-blue-500 text-xs tracking-widest block mb-2">2023 // GENESIS</span>
                     <h3 class="text-3xl font-bold mb-4">L'Anomalie</h3>
-                    <p class="opacity-50 text-sm leading-relaxed">
-                        Constat alarmant : 90% des sites web en RDC étaient lents, non-sécurisés et basés sur des
-                        templates dépassés. La décision est prise de créer une "Force Spéciale" du digital.
-                    </p>
+                    <p class="opacity-50 text-sm leading-relaxed">Constat alarmant : 90% des sites web en RDC étaient lents, non-sécurisés et basés sur des templates dépassés. La décision est prise de créer une "Force Spéciale" du digital.</p>
                 </div>
-
-                <!-- Date 2 -->
                 <div class="relative reveal-up">
                     <div class="timeline-point" style="top: 8px;"></div>
                     <span class="font-mono text-blue-500 text-xs tracking-widest block mb-2">2026 // KINETIX V1</span>
                     <h3 class="text-3xl font-bold mb-4">Le Déploiement</h3>
-                    <p class="opacity-50 text-sm leading-relaxed">
-                        Ouverture officielle des bureaux à Gombe. Premier contrat majeur avec une Fintech locale.
-                        Lancement de notre framework propriétaire "ZenMode".
-                    </p>
+                    <p class="opacity-50 text-sm leading-relaxed">Ouverture officielle des bureaux à Gombe. Premier contrat majeur avec une Fintech locale. Lancement de notre framework propriétaire "ZenMode".</p>
                 </div>
-
-                <!-- Date 3 -->
                 <div class="relative reveal-up">
-                    <div class="timeline-point"
-                        style="top: 8px; border-color: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);"></div>
+                    <div class="timeline-point" style="top: 8px; border-color: #10B981; box-shadow: 0 0 10px rgba(16,185,129,0.5);"></div>
                     <span class="font-mono text-emerald-500 text-xs tracking-widest block mb-2">2025 // EXPANSION</span>
                     <h3 class="text-3xl font-bold mb-4">La Domination</h3>
-                    <p class="opacity-50 text-sm leading-relaxed">
-                        Intégration de l'IA générative dans nos workflows. Kinetix devient la référence standard pour
-                        les entreprises qui refusent la médiocrité.
-                    </p>
+                    <p class="opacity-50 text-sm leading-relaxed">Intégration de l'IA générative dans nos workflows. Kinetix devient la référence standard pour les entreprises qui refusent la médiocrité.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- TEAM SECTION (L'ÉLITE) -->
+    <!-- TEAM SECTION -->
     <section class="py-20 px-8 md:px-24">
         <div class="mb-20 text-center reveal-up">
             <h2 class="text-blue-500 font-mono text-[10px] tracking-[0.6em] mb-6 uppercase">Les Opérateurs</h2>
-            <h3 class="text-4xl md:text-6xl font-black font-title tracking-tighter leading-none">
-                L'UNITÉ <span class="text-blue-500">CENTRALE.</span>
-            </h3>
+            <h3 class="text-4xl md:text-6xl font-black font-title tracking-tighter leading-none">L'UNITÉ <span class="text-blue-500">CENTRALE.</span></h3>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Member 1 -->
+            <!-- Member 1 — FIX: balise div correctement fermée -->
             <div class="team-card reveal-up">
                 <div class="team-img-wrapper h-[400px] mb-6 bg-white/5">
-                    <img src="images/GM..jpg"
-                        class="team-img w-full h-full object-cover" alt="Fondateur">
+                    <img src="images/GM..jpg" class="team-img w-full h-full object-cover" alt="Fondateur">
                 </div>
                 <div class="text-center">
                     <h4 class="text-xl font-bold mb-1">Guili M.</h4>
                     <div class="font-mono text-[9px] text-blue-500 tracking-[0.2em] uppercase">Architecte Système</div>
                 </div>
             </div>
-
-            <!-- Member 2 -->
+            <!-- Member 2 — FIX: balise div correctement fermée -->
             <div class="team-card reveal-up" style="transition-delay: 0.1s">
                 <div class="team-img-wrapper h-[400px] mb-6 bg-white/5">
-                    <img src="images/NARCISSE.jpg"
-                        class="team-img w-full h-full object-cover" alt="Designer">
+                    <img src="images/NARCISSE.jpg" class="team-img w-full h-full object-cover" alt="Designer">
                 </div>
                 <div class="text-center">
                     <h4 class="text-xl font-bold mb-1">NARCISSE M.</h4>
-                    <div class="font-mono text-[9px] text-blue-500 tracking-[0.2em] uppercase">Fullstack Engineer/div>
+                    <div class="font-mono text-[9px] text-blue-500 tracking-[0.2em] uppercase">Fullstack Engineer</div>
                 </div>
             </div>
-
-            <!-- Member 3 -->
+            <!-- Member 3 — FIX: balise div correctement fermée -->
             <div class="team-card reveal-up" style="transition-delay: 0.2s">
                 <div class="team-img-wrapper h-[400px] mb-6 bg-white/5">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop"
-                        class="team-img w-full h-full object-cover" alt="Dev">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop" class="team-img w-full h-full object-cover" alt="Dev">
                 </div>
                 <div class="text-center">
                     <h4 class="text-xl font-bold mb-1">EPHRAIM Y.</h4>
-                    <div class="font-mono text-[9px] text-blue-500 tracking-[0.2em] uppercase">Lead Engineer 3D/div>
+                    <div class="font-mono text-[9px] text-blue-500 tracking-[0.2em] uppercase">Lead Engineer 3D</div>
                 </div>
             </div>
         </div>
@@ -329,54 +179,26 @@
 
     <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-8 md:px-24">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-
-            <!-- Colonne 1 : Logo & Info -->
             <div class="col-span-1 md:col-span-2">
-                <a href="index.html" class="block mb-6">
-                    <span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span
-                            class="text-blue-500">.</span></span>
-                </a>
-                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
-                    Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur
-                    marché grâce à la technologie.
-                </p>
+                <a href="index.html" class="block mb-6"><span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span class="text-blue-500">.</span></span></a>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur marché grâce à la technologie.</p>
             </div>
-
-            <!-- Colonne 2 : Liens -->
             <div>
                 <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4>
                 <ul class="space-y-4 text-sm text-gray-400 font-mono">
-                    <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
-                    <li><a href="about.html" class="hover:text-white transition-colors">L'Agence</a></li>
-                    <li><a href="contact.html" class="hover:text-white transition-colors">Carrières</a></li>
-                    <li><a href="mentions.html" class="hover:text-white transition-colors">Mentions Légales</a></li>
+                    <li><a href="services.html"  class="hover:text-white transition-colors">Services</a></li>
+                    <li><a href="about.html"     class="hover:text-white transition-colors">L'Agence</a></li>
+                    <li><a href="rejoindre.html" class="hover:text-white transition-colors">Carrières</a></li>
+                    <li><a href="mentions.html"  class="hover:text-white transition-colors">Mentions Légales</a></li>
                 </ul>
             </div>
-
-            <!-- Colonne 3 : Social (Icônes) -->
             <div>
                 <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4>
                 <div class="flex gap-4">
-                    <!-- LinkedIn -->
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
-                        <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 group-hover:text-white"></i>
-                    </a>
-                    <!-- Instagram -->
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all">
-                        <i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i>
-                    </a>
-                    <!-- Twitter / X -->
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                        <i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i>
-                    </a>
-                    <!-- WhatsApp -->
-                    <a href="https://www.wa.me/243900260394"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
-                        <i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i>
-                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><i data-lucide="linkedin" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 transition-all"><i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="https://wa.me/message/BVQ7YLS7PGQ6L1" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 transition-all"><i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i></a>
                 </div>
                 <div class="mt-6">
                     <p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p>
@@ -384,36 +206,39 @@
                 </div>
             </div>
         </div>
-
-        <!-- Copyright -->
-        <div
-            class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
             <p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p>
             <p>Designed by <strong>Guili MONGHIRO</strong></p>
         </div>
     </footer>
 
-    <!-- SCRIPTS -->
     <script>
         lucide.createIcons();
         gsap.registerPlugin(ScrollTrigger);
-
-        // Preloader
+        let isMenuOpen = false;
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            const menu = document.getElementById('mobile-menu');
+            const menuText = document.getElementById('menu-text');
+            const btn = document.getElementById('menu-btn');
+            if (isMenuOpen) { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); menuText.innerText='FERMER ×'; menuText.classList.add('text-blue-500'); document.body.style.overflow='hidden'; }
+            else { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); menuText.innerText='MENU +'; menuText.classList.remove('text-blue-500'); document.body.style.overflow=''; }
+        }
+        document.addEventListener('keydown', (e) => { if (e.key==='Escape' && isMenuOpen) toggleMenu(); });
+        (function highlightActiveNav() {
+            const filename = window.location.pathname.split('/').pop().replace('.html','') || 'index';
+            document.querySelectorAll('.nav-link[data-page]').forEach(l => { if(l.getAttribute('data-page')===filename){l.classList.add('active-page'); if(filename==='contact'){l.style.background='#3B82F6';l.style.color='#fff';}} });
+            document.querySelectorAll('.mobile-nav-link[data-page]').forEach(l => { if(l.getAttribute('data-page')===filename) l.classList.add('active-page'); });
+        })();
         const loadPerc = document.getElementById('load-perc');
         const loadBar = document.getElementById('load-bar');
         let progress = 0;
         const interval = setInterval(() => {
             progress += Math.random() * 5;
             if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(startExperience, 500); }
-            loadPerc.innerText = `${Math.floor(progress)}%`;
-            loadBar.style.width = `${progress}%`;
+            loadPerc.innerText = `${Math.floor(progress)}%`; loadBar.style.width = `${progress}%`;
         }, 30);
-
-        function startExperience() {
-            gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
-        }
-
-        // BG 3D
+        function startExperience() { gsap.to("#preloader", { opacity: 0, duration: 1, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display='none'; initAnimations(); } }); }
         const canvas = document.getElementById('webgl-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -429,22 +254,10 @@
         scene.add(particles);
         function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.0005; renderer.render(scene, camera); }
         animate();
-
-        // Cursor
         const cursor = document.getElementById('custom-cursor');
         const follower = document.getElementById('cursor-follower');
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
-        });
-
-        // Animations
-        function initAnimations() {
-            gsap.utils.toArray('.reveal-up').forEach(elem => {
-                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" });
-            });
-        }
+        document.addEventListener('mousemove', (e) => { gsap.to(cursor,{x:e.clientX,y:e.clientY,duration:0}); gsap.to(follower,{x:e.clientX-20,y:e.clientY-20,duration:0.2}); });
+        function initAnimations() { gsap.utils.toArray('.reveal-up').forEach(elem => { gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" }); }); }
     </script>
 </body>
-
 </html>

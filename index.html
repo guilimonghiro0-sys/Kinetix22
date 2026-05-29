@@ -1,292 +1,123 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KINETIX | L'Elite Digitale de Kinshasa</title>
+    <meta name="description" content="Agence digitale d'élite basée à Kinshasa. Sites immersifs, apps mobiles, architecture backend — Kinetix construit le futur numérique de la RDC.">
+    <meta property="og:title" content="KINETIX | L'Elite Digitale de Kinshasa">
+    <meta property="og:description" content="Agence digitale d'élite basée à Kinshasa. Sites immersifs, apps mobiles, architecture backend.">
+    <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
-
-        :root {
-            --primary: #3B82F6;
-            --emerald: #10B981;
-            --bg: #05070A;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            cursor: default;
-            /* Défaut pour mobile */
-        }
-
-        /* Curseur personnalisé uniquement sur PC */
-        @media(min-width: 1024px) {
-            body {
-                cursor: none;
-            }
-        }
-
-        .font-title {
-            font-family: 'Syncopate', sans-serif;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains+Mono', monospace;
-        }
-
-        /* UI Elements */
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .text-reveal {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-        }
-
-        .char {
-            display: inline-block;
-            transform: translateY(110%);
-        }
-
-        .glare-card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glare-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s;
-            pointer-events: none;
-            mix-blend-overlay: overlay;
-        }
-
-        .glare-card:hover::after {
-            opacity: 1;
-        }
-
-        /* Utils */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loader-bar {
-            width: 200px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .loader-progress {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0%;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        /* Cursors */
-        #custom-cursor {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: #fff;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            mix-blend-difference: difference;
-            display: none;
-        }
-
-        #cursor-follower {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99998;
-            transition: transform 0.15s ease-out;
-            display: none;
-        }
-
-        @media (min-width: 1024px) {
-
-            #custom-cursor,
-            #cursor-follower {
-                display: block;
-            }
-        }
-
-        #webgl-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            opacity: 0.6;
-        }
-
-        /* Partner Logos */
-        .partner-logo {
-            max-height: 30px;
-            width: auto;
-            filter: grayscale(100%);
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-
-        .partner-logo:hover {
-            filter: grayscale(0%);
-            opacity: 1;
-        }
-
-        @media (min-width: 768px) {
-            .partner-logo {
-                max-height: 50px;
-            }
-        }
-
-        /* --- MOBILE MENU STYLES (CRUCIAL) --- */
-        #mobile-menu {
-            transform: translateX(100%);
-            /* Caché à droite par défaut */
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform;
-        }
-
-        #mobile-menu.open {
-            transform: translateX(0);
-            /* Visible */
-        }
+        :root { --primary: #3B82F6; --emerald: #10B981; --bg: #05070A; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: default; }
+        @media(min-width: 1024px) { body { cursor: none; } }
+        .font-title { font-family: 'Syncopate', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(255,255,255,0.02); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+        .text-reveal { clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+        .char { display: inline-block; transform: translateY(110%); }
+        .glare-card { position: relative; overflow: hidden; }
+        .glare-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+        .glare-card:hover::after { opacity: 1; }
+        #preloader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 20px; }
+        .loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        #custom-cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 99999; mix-blend-mode: difference; display: none; }
+        #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 99998; transition: transform 0.15s ease-out; display: none; }
+        @media (min-width: 1024px) { #custom-cursor, #cursor-follower { display: block; } }
+        #webgl-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
+        .partner-logo { max-height: 30px; width: auto; filter: grayscale(100%); opacity: 0.5; transition: 0.3s; }
+        .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
+        @media (min-width: 768px) { .partner-logo { max-height: 50px; } }
+        /* Nav mobile */
+        #mobile-menu { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); will-change: transform; }
+        #mobile-menu.open { transform: translateX(0); }
+        .nav-link.active-page { color: #3B82F6 !important; pointer-events: none; }
+        .mobile-nav-link.active-page { color: #3B82F6 !important; }
+        #mobile-menu .relative.z-10 a { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease, color 0.2s ease; }
+        #mobile-menu.open .relative.z-10 a { opacity: 1; transform: translateY(0); }
+        #mobile-menu.open .relative.z-10 a:nth-child(1) { transition-delay: 0.08s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(2) { transition-delay: 0.13s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(3) { transition-delay: 0.18s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(4) { transition-delay: 0.23s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(5) { transition-delay: 0.28s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(6) { transition-delay: 0.33s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(7) { transition-delay: 0.38s; }
+        #mobile-menu.open .relative.z-10 a:nth-child(8) { transition-delay: 0.43s; }
     </style>
 </head>
-
 <body>
-
-    <!-- PRELOADER -->
     <div id="preloader">
         <div class="font-title text-xs tracking-[1em] opacity-50 mb-4 text-center">INITIALIZING_KINETIX_ENGINE</div>
         <div class="text-3xl font-black mb-2" id="load-perc">0%</div>
-        <div class="loader-bar">
-            <div class="loader-progress" id="load-bar"></div>
-        </div>
+        <div class="loader-bar"><div class="loader-progress" id="load-bar"></div></div>
     </div>
-
     <div id="custom-cursor"></div>
     <div id="cursor-follower"></div>
     <canvas id="webgl-canvas"></canvas>
 
-    <!-- NAVIGATION COMPLETE -->
-    <nav
-        class="fixed top-0 w-full z-[100] flex justify-between items-center px-6 py-6 md:px-16 mix-blend-difference text-white">
-        <!-- Logo -->
+    <!-- NAV UNIVERSEL -->
+    <nav id="kinetix-nav" class="fixed top-0 w-full z-[100] flex justify-between items-center px-6 py-6 md:px-16 mix-blend-difference text-white">
         <a href="index.html" class="group cursor-pointer flex items-start gap-1 select-none z-[101]">
             <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">&lt;</span>
-            <span class="text-xl md:text-2xl font-black font-title tracking-tighter leading-none">
-                KINETIX<span class="text-blue-500 inline-block">.</span>
-            </span>
+            <span class="text-xl md:text-2xl font-black font-title tracking-tighter leading-none">KINETIX<span class="text-blue-500 inline-block">.</span></span>
             <span class="font-mono text-[10px] text-blue-500 opacity-80 mt-1">/&gt;</span>
         </a>
-
-        <!-- Desktop Menu -->
         <div class="hidden xl:flex gap-8 items-center pointer-events-auto font-mono text-[9px] tracking-[0.2em]">
-            <a href="services.html" class="hover:text-blue-500 transition-colors">MATRICE</a>
-            <a href="projets.html" class="hover:text-blue-500 transition-colors">NEXUS</a>
-<<<<<<< HEAD
-            <a href="about.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
-            <a href="zen_mode.html" class="text-blue-500 font-bold">ZEN_MODE</a>
-=======
-            <a href="valeurs.html" class="hover:text-blue-500 transition-colors">LE_CODE</a>
-            <a href="blog.html" class="hover:text-blue-500 transition-colors">FLUX</a>
-            <a href="about.html" class="hover:text-blue-500 transition-colors">LE_LAB</a>
-            <a href="zen_mode.html"
-                class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-text-white transition-all transform hover:scale-105 active:scale-95"></a>
->>>>>>> 8a62ad3c712e83600bfd0815df2c8f3e8619f130
-            <a href="contact.html"
-                class="px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95">
-                CONTACT
-            </a>
+            <a href="services.html"  class="nav-link hover:text-blue-500 transition-colors" data-page="services">MATRICE</a>
+            <a href="projets.html"   class="nav-link hover:text-blue-500 transition-colors" data-page="projets">NEXUS</a>
+            <a href="valeurs.html"   class="nav-link hover:text-blue-500 transition-colors" data-page="valeurs">LE_CODE</a>
+            <a href="blog.html"      class="nav-link hover:text-blue-500 transition-colors" data-page="blog">FLUX</a>
+            <a href="about.html"     class="nav-link hover:text-blue-500 transition-colors" data-page="about">LE_LAB</a>
+            <a href="rejoindre.html" class="nav-link hover:text-blue-500 transition-colors" data-page="rejoindre">CARRIÈRES</a>
+            <a href="contact.html"   class="nav-link px-6 py-2 bg-white text-black rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 active:scale-95" data-page="contact">INITIALISER</a>
         </div>
-
-        <!-- Mobile Menu Button (Le déclencheur) -->
-        <button id="menu-btn"
-            class="xl:hidden pointer-events-auto text-xs font-mono z-[101] flex items-center gap-2 group cursor-pointer"
-            onclick="toggleMenu()">
-            <span id="menu-text" class="group-hover:text-blue-500 transition-colors font-bold">MENU +</span>
+        <button id="menu-btn" class="xl:hidden pointer-events-auto text-xs font-mono z-[101] flex items-center gap-2 group cursor-pointer" onclick="toggleMenu()" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span id="menu-text" class="group-hover:text-blue-500 transition-colors font-bold tracking-widest">MENU +</span>
         </button>
     </nav>
-
-    <!-- MOBILE MENU OVERLAY (Le panneau qui s'ouvre) -->
-    <div id="mobile-menu"
-        class="fixed inset-0 bg-[#020305] z-[90] flex flex-col justify-center items-center xl:hidden text-center">
-        <div class="flex flex-col gap-8 font-title text-3xl font-bold">
-            <a href="index.html" class="hover:text-blue-500 transition-colors" onclick="toggleMenu()">ACCUEIL</a>
-            <a href="services.html" class="hover:text-blue-500 transition-colors" onclick="toggleMenu()">MATRICE</a>
-            <a href="projets.html" class="hover:text-blue-500 transition-colors" onclick="toggleMenu()">NEXUS</a>
-            <a href="about.html" class="hover:text-blue-500 transition-colors" onclick="toggleMenu()">LE_LAB</a>
-            <a href="zen_mode.html" class="text-green-500" onclick="toggleMenu()">ZEN_MODE</a>
-            <a href="contact.html" class="text-sm font-mono border border-white/20 px-8 py-3 rounded-full mt-4"
-                onclick="toggleMenu()">CONTACTER L'AGENCE</a>
+    <div id="mobile-menu" class="fixed inset-0 bg-[#020305] z-[90] flex flex-col justify-center items-center xl:hidden text-center" aria-hidden="true">
+        <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(59,130,246,0.15) 1px, transparent 1px); background-size: 28px 28px;"></div>
+        <div class="relative z-10 flex flex-col gap-8 font-title text-2xl font-bold">
+            <a href="index.html"     class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="index"     onclick="toggleMenu()">ACCUEIL</a>
+            <a href="services.html"  class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="services"  onclick="toggleMenu()">MATRICE</a>
+            <a href="projets.html"   class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="projets"   onclick="toggleMenu()">NEXUS</a>
+            <a href="valeurs.html"   class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="valeurs"   onclick="toggleMenu()">LE_CODE</a>
+            <a href="blog.html"      class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="blog"      onclick="toggleMenu()">FLUX_NEURAL</a>
+            <a href="about.html"     class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="about"     onclick="toggleMenu()">LE_LAB</a>
+            <a href="rejoindre.html" class="mobile-nav-link hover:text-blue-500 transition-colors" data-page="rejoindre" onclick="toggleMenu()">CARRIÈRES</a>
+            <a href="contact.html"   class="mobile-nav-link text-sm font-mono border border-white/20 px-8 py-3 rounded-full mt-2 hover:border-blue-500 hover:text-blue-500 transition-all" data-page="contact" onclick="toggleMenu()">INITIALISER LA MISSION</a>
         </div>
-        <div class="absolute bottom-10 opacity-30 font-mono text-[10px]">
-            KINSHASA • RDC
+        <div class="absolute bottom-10 text-center opacity-30 font-mono text-[10px] tracking-widest">
+            <div>KINSHASA • RDC</div><div class="mt-1">+243 900 260 394</div>
         </div>
     </div>
 
     <!-- HERO -->
     <section class="relative h-screen flex flex-col justify-center px-6 md:px-24 overflow-hidden">
         <div class="absolute top-1/4 left-0 w-full h-full pointer-events-none opacity-10">
-            <h1 class="text-[20vw] font-black font-title leading-none outline-text"
-                style="-webkit-text-stroke: 1px white; color: transparent;">KINETIX</h1>
+            <h1 class="text-[20vw] font-black font-title leading-none" style="-webkit-text-stroke: 1px white; color: transparent;">KINETIX</h1>
         </div>
         <div class="max-w-7xl relative z-10">
             <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8 overflow-hidden">
                 <span class="inline-block translate-y-full" id="hero-tag">// L'ÉLITE_DIGITALE_DE_KINSHASA</span>
             </div>
-            <h1
-                class="text-5xl sm:text-6xl md:text-[11rem] font-black font-title leading-[0.9] tracking-tighter mb-12 break-words">
+            <h1 class="text-5xl sm:text-6xl md:text-[11rem] font-black font-title leading-[0.9] tracking-tighter mb-12 break-words">
                 <div class="text-reveal"><span class="char">BEYOND</span></div>
-                <div class="text-reveal"><span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-white">LIMITS.</span>
-                </div>
+                <div class="text-reveal"><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-white">LIMITS.</span></div>
             </h1>
             <div class="flex flex-col md:flex-row items-start md:items-center gap-12 opacity-0" id="hero-sub">
                 <p class="text-base md:text-2xl font-light opacity-50 max-w-lg leading-relaxed italic">
-                    "Nous architecturons le futur numérique de la RDC. Pas de templates. Pas de limites. Juste du code
-                    pur et de l'émotion."
+                    "Nous architecturons le futur numérique de la RDC. Pas de templates. Pas de limites. Juste du code pur et de l'émotion."
                 </p>
-                <a href="projets.html"
-                    class="px-8 py-4 border border-white/20 hover:border-blue-500 hover:bg-blue-500/10 rounded-full transition-all font-mono text-xs tracking-widest uppercase text-center w-full md:w-auto">
+                <a href="projets.html" class="px-8 py-4 border border-white/20 hover:border-blue-500 hover:bg-blue-500/10 rounded-full transition-all font-mono text-xs tracking-widest uppercase text-center w-full md:w-auto">
                     Explorer le Nexus
                 </a>
             </div>
@@ -295,15 +126,12 @@
 
     <!-- PARTENAIRES -->
     <div class="px-6 md:px-24 mb-32">
-        <p class="font-mono text-[9px] text-gray-600 uppercase tracking-widest mb-8 border-t border-white/10 pt-8">
-            Trusted By</p>
+        <p class="font-mono text-[9px] text-gray-600 uppercase tracking-widest mb-8 border-t border-white/10 pt-8">Trusted By</p>
         <div class="flex flex-wrap items-center gap-12 md:gap-20">
             <img src="images/WEACT.png" alt="WE_ACT" class="partner-logo">
             <img src="images/TALKBYEZER.png" alt="TALK_BY_EZER" class="partner-logo">
             <img src="images/RAWBANK.png" alt="RAWBANK" class="partner-logo">
-            <div class="partner-logo font-title font-bold text-xl text-gray-400 border border-gray-600 p-2 rounded">
-                CLIENT_RDC
-            </div>
+            <div class="partner-logo font-title font-bold text-xl text-gray-400 border border-gray-600 p-2 rounded">CLIENT_RDC</div>
         </div>
     </div>
 
@@ -311,42 +139,27 @@
     <section class="py-20 md:py-40 px-6 md:px-24 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-32 items-start mb-32">
             <div class="lg:sticky lg:top-40">
-                <h2 class="text-blue-500 font-mono text-[10px] tracking-[0.6em] mb-6 uppercase reveal-side">Nos Armes
-                    Digitales</h2>
-                <h3 class="text-4xl md:text-7xl font-black font-title tracking-tighter leading-none mb-12 reveal-side">
-                    L'ART DU <br /><span class="text-blue-500">MOUVEMENT.</span>
-                </h3>
-                <p class="text-lg md:text-xl opacity-40 leading-relaxed max-w-md reveal-side">
-                    Chaque pixel est orchestré. Chaque interaction est une émotion. Nous fusionnons la force brute du
-                    code et la poésie du design.
-                </p>
-                <a href="services.html"
-                    class="inline-block mt-8 text-sm font-mono tracking-widest text-blue-500 hover:text-white transition-colors reveal-side">
-                    VOIR LES SCHÉMAS TECHNIQUES →
-                </a>
+                <h2 class="text-blue-500 font-mono text-[10px] tracking-[0.6em] mb-6 uppercase reveal-side">Nos Armes Digitales</h2>
+                <h3 class="text-4xl md:text-7xl font-black font-title tracking-tighter leading-none mb-12 reveal-side">L'ART DU <br/><span class="text-blue-500">MOUVEMENT.</span></h3>
+                <p class="text-lg md:text-xl opacity-40 leading-relaxed max-w-md reveal-side">Chaque pixel est orchestré. Chaque interaction est une émotion. Nous fusionnons la force brute du code et la poésie du design.</p>
+                <a href="services.html" class="inline-block mt-8 text-sm font-mono tracking-widest text-blue-500 hover:text-white transition-colors reveal-side">VOIR LES SCHÉMAS TECHNIQUES →</a>
             </div>
-
             <div class="grid grid-cols-1 gap-8">
-                <div
-                    class="glass glare-card p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
+                <div class="glass glare-card p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
                     <div class="flex justify-between items-center mb-10">
                         <i data-lucide="monitor-play" class="w-8 h-8 text-blue-500"></i>
                         <span class="font-mono text-[9px] opacity-30">01_WEB_CINEMATIC</span>
                     </div>
                     <h4 class="text-2xl md:text-3xl font-bold mb-4">Sites Immersifs</h4>
-                    <p class="text-sm opacity-50 leading-relaxed">WebGL et GSAP pour des expériences fluides à 120fps.
-                    </p>
+                    <p class="text-sm opacity-50 leading-relaxed">WebGL et GSAP pour des expériences fluides à 120fps.</p>
                 </div>
-
-                <div
-                    class="glass glare-card p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
+                <div class="glass glare-card p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] group cursor-pointer hover:border-blue-500 transition-all reveal-up">
                     <div class="flex justify-between items-center mb-10">
                         <i data-lucide="smartphone" class="w-8 h-8 text-blue-500"></i>
                         <span class="font-mono text-[9px] opacity-30">02_MOBILE_ELITE</span>
                     </div>
                     <h4 class="text-2xl md:text-3xl font-bold mb-4">Apps Natives</h4>
-                    <p class="text-sm opacity-50 leading-relaxed">iOS et Android. Des interactions tactiles qui semblent
-                        naturelles.</p>
+                    <p class="text-sm opacity-50 leading-relaxed">iOS et Android. Des interactions tactiles qui semblent naturelles.</p>
                 </div>
             </div>
         </div>
@@ -356,39 +169,25 @@
     <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-6 md:px-24">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div class="col-span-1 md:col-span-2">
-                <a href="index.html" class="block mb-6">
-                    <span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span
-                            class="text-blue-500">.</span></span>
-                </a>
-                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
-                    Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur
-                    marché grâce à la technologie.
-                </p>
+                <a href="index.html" class="block mb-6"><span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span class="text-blue-500">.</span></span></a>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur marché grâce à la technologie.</p>
             </div>
             <div>
                 <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4>
                 <ul class="space-y-4 text-sm text-gray-400 font-mono">
-                    <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
-                    <li><a href="about.html" class="hover:text-white transition-colors">L'Agence</a></li>
-                    <li><a href="contact.html" class="hover:text-white transition-colors">Carrières</a></li>
-                    <li><a href="mentions.html" class="hover:text-white transition-colors">Mentions Légales</a></li>
+                    <li><a href="services.html"  class="hover:text-white transition-colors">Services</a></li>
+                    <li><a href="about.html"     class="hover:text-white transition-colors">L'Agence</a></li>
+                    <li><a href="rejoindre.html" class="hover:text-white transition-colors">Carrières</a></li>
+                    <li><a href="mentions.html"  class="hover:text-white transition-colors">Mentions Légales</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4>
                 <div class="flex gap-4">
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i
-                            data-lucide="linkedin" class="w-5 h-5 text-gray-400 group-hover:text-white"></i></a>
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all"><i
-                            data-lucide="instagram" class="w-5 h-5 text-gray-400"></i></a>
-                    <a href="#"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i
-                            data-lucide="twitter" class="w-5 h-5 text-gray-400"></i></a>
-                    <a href="https://wa.me/message/BVQ7YLS7PGQ6L1"
-                        class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"><i
-                            data-lucide="whatsapp" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><i data-lucide="linkedin" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 transition-all"><i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i></a>
+                    <a href="https://wa.me/message/BVQ7YLS7PGQ6L1" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 transition-all"><i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i></a>
                 </div>
                 <div class="mt-6">
                     <p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p>
@@ -396,8 +195,7 @@
                 </div>
             </div>
         </div>
-        <div
-            class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
             <p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p>
             <p>Designed by <strong>Guili MONGHIRO</strong></p>
         </div>
@@ -407,24 +205,21 @@
         lucide.createIcons();
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- ICI LA FONCTION QUI FAIT MARCHER LE MENU ---
         let isMenuOpen = false;
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             const menu = document.getElementById('mobile-menu');
             const menuText = document.getElementById('menu-text');
-
-            if (isMenuOpen) {
-                menu.classList.add('open');
-                menuText.innerText = "FERMER -";
-                menuText.classList.add('text-blue-500');
-            } else {
-                menu.classList.remove('open');
-                menuText.innerText = "MENU +";
-                menuText.classList.remove('text-blue-500');
-            }
+            const btn = document.getElementById('menu-btn');
+            if (isMenuOpen) { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); menuText.innerText='FERMER ×'; menuText.classList.add('text-blue-500'); document.body.style.overflow='hidden'; }
+            else { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); menuText.innerText='MENU +'; menuText.classList.remove('text-blue-500'); document.body.style.overflow=''; }
         }
-        // ------------------------------------------------
+        document.addEventListener('keydown', (e) => { if (e.key==='Escape' && isMenuOpen) toggleMenu(); });
+        (function highlightActiveNav() {
+            const filename = window.location.pathname.split('/').pop().replace('.html','') || 'index';
+            document.querySelectorAll('.nav-link[data-page]').forEach(l => { if(l.getAttribute('data-page')===filename){l.classList.add('active-page'); if(filename==='contact'){l.style.background='#3B82F6';l.style.color='#fff';}} });
+            document.querySelectorAll('.mobile-nav-link[data-page]').forEach(l => { if(l.getAttribute('data-page')===filename) l.classList.add('active-page'); });
+        })();
 
         const loadPerc = document.getElementById('load-perc');
         const loadBar = document.getElementById('load-bar');
@@ -435,11 +230,9 @@
             loadPerc.innerText = `${Math.floor(progress)}%`;
             loadBar.style.width = `${progress}%`;
         }, 40);
-
         function startExperience() {
-            gsap.to("#preloader", { opacity: 0, duration: 1.2, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display = 'none'; initAnimations(); } });
+            gsap.to("#preloader", { opacity: 0, duration: 1.2, ease: "expo.inOut", onComplete: () => { document.getElementById('preloader').style.display='none'; initAnimations(); } });
         }
-
         const canvas = document.getElementById('webgl-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio);
@@ -454,47 +247,24 @@
         const material = new THREE.PointsMaterial({ size: 0.012, color: 0x3B82F6, transparent: true, opacity: 0.7 });
         const particles = new THREE.Points(geometry, material);
         scene.add(particles);
-
         let mouseX = 0;
         document.addEventListener('mousemove', (e) => { mouseX = (e.clientX / window.innerWidth - 0.5) * 2; });
-        function animate() {
-            requestAnimationFrame(animate);
-            particles.rotation.y += 0.0008;
-            particles.position.x += (mouseX * 0.4 - particles.position.x) * 0.05;
-            renderer.render(scene, camera);
-        }
+        function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.0008; particles.position.x += (mouseX * 0.4 - particles.position.x) * 0.05; renderer.render(scene, camera); }
         animate();
-
-        // Curseur désactivé sur mobile via CSS, activé via JS sur PC
         if (window.matchMedia("(min-width: 1024px)").matches) {
             const cursor = document.getElementById('custom-cursor');
             const follower = document.getElementById('cursor-follower');
-            document.addEventListener('mousemove', (e) => {
-                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-                gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
-            });
+            document.addEventListener('mousemove', (e) => { gsap.to(cursor,{x:e.clientX,y:e.clientY,duration:0}); gsap.to(follower,{x:e.clientX-20,y:e.clientY-20,duration:0.2}); });
         }
-
         function initAnimations() {
             const tl = gsap.timeline();
             tl.to("#hero-tag", { y: 0, duration: 1, ease: "expo.out" })
-                .to(".char", { y: 0, stagger: 0.05, duration: 1.5, ease: "expo.out" }, "-=0.5")
-                .to("#hero-sub", { opacity: 1, y: 0, duration: 1.5 }, "-=1");
-
-            gsap.utils.toArray('.reveal-up').forEach(elem => {
-                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 80, opacity: 0, duration: 1.2, ease: "power3.out" });
-            });
-            gsap.utils.toArray('.reveal-side').forEach(elem => {
-                gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, x: -50, opacity: 0, duration: 1.2, ease: "power3.out" });
-            });
+              .to(".char", { y: 0, stagger: 0.05, duration: 1.5, ease: "expo.out" }, "-=0.5")
+              .to("#hero-sub", { opacity: 1, y: 0, duration: 1.5 }, "-=1");
+            gsap.utils.toArray('.reveal-up').forEach(elem => { gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, y: 80, opacity: 0, duration: 1.2, ease: "power3.out" }); });
+            gsap.utils.toArray('.reveal-side').forEach(elem => { gsap.from(elem, { scrollTrigger: { trigger: elem, start: "top 85%" }, x: -50, opacity: 0, duration: 1.2, ease: "power3.out" }); });
         }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
 </body>
-
 </html>

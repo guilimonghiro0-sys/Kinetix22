@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,148 +8,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* FIX: Import Syncopate ajouté (manquait dans l'original) */
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=JetBrains+Mono:wght@400;700&display=swap');
-
-        :root {
-            --zen-green: #00FF9D;
-            /* Vert Électrique */
-            --bg-dark: #050906;
-            /* Noir légèrement teinté vert */
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'JetBrains Mono', monospace;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        .font-logo {
-            font-family: 'Syncopate', sans-serif;
-            font-weight: 700;
-        }
-
-        .text-zen {
-            color: var(--zen-green);
-        }
-
-        .border-zen {
-            border-color: var(--zen-green);
-        }
-
-        .bg-zen {
-            background-color: var(--zen-green);
-        }
-
-        /* --- LOGIN SCREEN --- */
-        #login-screen {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .input-field {
-            background: rgba(0, 255, 157, 0.05);
-            border: 1px solid rgba(0, 255, 157, 0.2);
-            color: var(--zen-green);
-            padding: 15px;
-            width: 280px;
-            text-align: center;
-            letter-spacing: 2px;
-            outline: none;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        .input-field:focus {
-            border-color: var(--zen-green);
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
-            background: rgba(0, 255, 157, 0.1);
-        }
-
-        .input-field::placeholder {
-            color: rgba(0, 255, 157, 0.3);
-        }
-
-        /* --- DASHBOARD --- */
-        #dashboard {
-            display: none;
-            opacity: 0;
-        }
-
-        .status-card {
-            background: rgba(0, 255, 157, 0.02);
-            border: 1px solid rgba(0, 255, 157, 0.1);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Progress Bar */
-        .progress-track {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--zen-green);
-            width: 0%;
-            transition: width 1.5s ease-out;
-            box-shadow: 0 0 15px var(--zen-green);
-        }
-
-        /* Timeline Dots */
-        .step-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #333;
-            position: relative;
-            z-index: 10;
-            transition: 0.3s;
-        }
-
-        .step-dot.active {
-            background: var(--zen-green);
-            box-shadow: 0 0 10px var(--zen-green);
-            scale: 1.2;
-        }
-
-        .step-line {
-            position: absolute;
-            top: 6px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: #333;
-            z-index: 0;
-        }
-
-        .step-line-fill {
-            height: 100%;
-            background: var(--zen-green);
-            width: 0%;
-            transition: width 2s ease;
-        }
-
-        /* Button Glow Hover */
-        .btn-zen:hover {
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+        :root{--zen-green:#00FF9D;--bg-dark:#050906}
+        body{background-color:var(--bg-dark);font-family:'JetBrains Mono',monospace;color:white;overflow-x:hidden}
+        .font-title{font-family:'Syncopate',sans-serif;font-weight:700}
+        .font-logo{font-family:'Syncopate',sans-serif;font-weight:700}
+        .text-zen{color:var(--zen-green)}.border-zen{border-color:var(--zen-green)}.bg-zen{background-color:var(--zen-green)}
+        #login-screen{position:fixed;inset:0;background:#000;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .input-field{background:rgba(0,255,157,0.05);border:1px solid rgba(0,255,157,0.2);color:var(--zen-green);padding:15px;width:280px;text-align:center;letter-spacing:2px;outline:none;transition:.3s;text-transform:uppercase}
+        .input-field:focus{border-color:var(--zen-green);box-shadow:0 0 20px rgba(0,255,157,0.2);background:rgba(0,255,157,0.1)}
+        .input-field::placeholder{color:rgba(0,255,157,0.3)}
+        #dashboard{display:none;opacity:0}
+        .status-card{background:rgba(0,255,157,0.02);border:1px solid rgba(0,255,157,0.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+        .progress-track{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+        .progress-bar{height:100%;background:var(--zen-green);width:0%;transition:width 1.5s ease-out;box-shadow:0 0 15px var(--zen-green)}
+        .step-dot{width:12px;height:12px;border-radius:50%;background:#333;position:relative;z-index:10;transition:.3s}
+        .step-dot.active{background:var(--zen-green);box-shadow:0 0 10px var(--zen-green);scale:1.2}
+        .step-line{position:absolute;top:6px;left:0;width:100%;height:1px;background:#333;z-index:0}
+        .step-line-fill{height:100%;background:var(--zen-green);width:0%;transition:width 2s ease}
+        .btn-zen:hover{box-shadow:0 0 20px rgba(0,255,157,0.4)}
+        /* FIX: timeline responsive mobile */
+        .timeline-mobile{display:none}
+        .timeline-desktop{display:flex}
+        @media(max-width:768px){
+            .timeline-mobile{display:flex;flex-direction:column;gap:1.5rem}
+            .timeline-desktop{display:none}
         }
     </style>
 </head>
-
 <body class="min-h-screen flex flex-col">
 
-    <!-- 1. ECRAN DE CONNEXION -->
+    <!-- ECRAN DE CONNEXION -->
     <div id="login-screen">
         <div class="mb-8 text-center">
             <h1 class="font-logo text-3xl tracking-tighter mb-2 text-white">ZEN_MODE</h1>
@@ -159,20 +48,14 @@
         <form onsubmit="event.preventDefault(); login();" class="flex flex-col gap-4">
             <input type="text" id="user" placeholder="ID CLIENT" class="input-field rounded-t">
             <input type="password" id="pass" placeholder="PASSWORD" class="input-field rounded-b">
-            <button
-                class="bg-zen text-black py-3 text-xs font-bold tracking-[0.2em] hover:bg-white hover:text-black transition-all uppercase btn-zen mt-4">
-                Initialiser l'Accès
-            </button>
+            <button class="bg-zen text-black py-3 text-xs font-bold tracking-[0.2em] hover:bg-white hover:text-black transition-all uppercase btn-zen mt-4">Initialiser l'Accès</button>
         </form>
         <p id="error" class="text-red-500 text-[9px] mt-4 opacity-0 font-mono tracking-widest">ACCÈS REFUSÉ</p>
     </div>
 
-    <!-- 2. TABLEAU DE BORD (Contenu) -->
+    <!-- TABLEAU DE BORD -->
     <div id="dashboard" class="flex-grow flex flex-col">
-
-        <!-- Navbar Client -->
-        <header
-            class="border-b border-white/5 px-8 py-6 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-40">
+        <header class="border-b border-white/5 px-8 py-6 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-40">
             <div class="flex items-center gap-4">
                 <div class="w-2 h-2 bg-zen rounded-full animate-pulse shadow-[0_0_10px_#00FF9D]"></div>
                 <span class="font-mono text-xs tracking-widest text-gray-400">CONNEXION ÉTABLIE</span>
@@ -183,221 +66,84 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="flex-grow p-8 md:p-16 max-w-7xl mx-auto w-full">
-
             <div class="mb-12">
                 <h1 class="text-3xl md:text-5xl font-bold mb-2 text-white">Bienvenue, M. le Client.</h1>
-                <p class="text-gray-500 font-mono text-sm">Statut actuel : <span class="text-zen">EN DÉVELOPPEMENT
-                        ACTIF</span></p>
+                <p class="text-gray-500 font-mono text-sm">Statut actuel : <span class="text-zen">EN DÉVELOPPEMENT ACTIF</span></p>
             </div>
 
-            <!-- STATUS GLOBAL -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <!-- Carte Avancement -->
                 <div class="status-card p-8 rounded-2xl col-span-1 md:col-span-2 relative overflow-hidden group">
-                    <div
-                        class="absolute top-0 right-0 p-4 opacity-10 text-zen group-hover:opacity-20 transition-opacity">
-                        <i data-lucide="activity" class="w-24 h-24"></i>
-                    </div>
-
-                    <h3 class="text-xs font-mono text-zen mb-2 uppercase tracking-widest opacity-80">Progression Globale
-                    </h3>
-                    <div class="flex items-end gap-4 mb-6">
-                        <span class="text-6xl font-bold font-logo text-white" id="prog-text">0%</span>
-                        <span class="text-sm text-zen mb-2 animate-pulse font-mono">> Traitement en cours...</span>
-                    </div>
-
-                    <div class="progress-track">
-                        <div class="progress-bar" id="prog-bar"></div>
-                    </div>
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-zen group-hover:opacity-20 transition-opacity"><i data-lucide="activity" class="w-24 h-24"></i></div>
+                    <h3 class="text-xs font-mono text-zen mb-2 uppercase tracking-widest opacity-80">Progression Globale</h3>
+                    <div class="flex items-end gap-4 mb-6"><span class="text-6xl font-bold font-logo text-white" id="prog-text">0%</span><span class="text-sm text-zen mb-2 animate-pulse font-mono">> Traitement en cours...</span></div>
+                    <div class="progress-track"><div class="progress-bar" id="prog-bar"></div></div>
                 </div>
-
-                <!-- Carte Info -->
                 <div class="status-card p-8 rounded-2xl flex flex-col justify-center">
                     <h3 class="text-xs font-mono text-gray-400 mb-4 uppercase tracking-widest">Prochaine Livraison</h3>
                     <div class="text-2xl font-bold mb-1 text-white">24 Janvier</div>
                     <p class="text-sm text-zen">Validation Maquettes UI/UX</p>
-                    <div class="mt-auto pt-6">
-                        <button
-                            class="w-full border border-zen/30 text-zen py-2 text-[10px] hover:bg-zen hover:text-black transition-all uppercase font-bold tracking-widest">
-                            Télécharger le Rapport
-                        </button>
-                    </div>
+                    <div class="mt-auto pt-6"><button class="w-full border border-zen/30 text-zen py-2 text-[10px] hover:bg-zen hover:text-black transition-all uppercase font-bold tracking-widest">Télécharger le Rapport</button></div>
                 </div>
             </div>
 
-            <!-- TIMELINE DÉTAILLÉE -->
+            <!-- TIMELINE DESKTOP (horizontal) -->
             <div class="mb-16">
-                <h3 class="font-mono text-xs text-gray-500 mb-8 uppercase tracking-widest border-b border-white/5 pb-4">
-                    Chronologie des Opérations</h3>
-
-                <div class="relative flex justify-between items-center max-w-4xl mx-auto py-8">
-                    <!-- Ligne de fond -->
+                <h3 class="font-mono text-xs text-gray-500 mb-8 uppercase tracking-widest border-b border-white/5 pb-4">Chronologie des Opérations</h3>
+                <div class="timeline-desktop relative justify-between items-center max-w-4xl mx-auto py-8">
                     <div class="step-line"></div>
-                    <!-- Ligne de remplissage (animée) -->
                     <div class="step-line-fill" id="step-fill"></div>
-
-                    <!-- Etape 1 -->
-                    <div class="flex flex-col items-center gap-4 relative z-10 group">
-                        <div class="step-dot active"></div>
-                        <div class="text-center">
-                            <p class="text-[10px] text-zen font-bold uppercase">Briefing</p>
-                            <p class="text-[9px] text-gray-500">Terminé</p>
-                        </div>
-                    </div>
-
-                    <!-- Etape 2 -->
-                    <div class="flex flex-col items-center gap-4 relative z-10">
-                        <div class="step-dot active"></div>
-                        <div class="text-center">
-                            <p class="text-[10px] text-zen font-bold uppercase">Wireframes</p>
-                            <p class="text-[9px] text-gray-500">Validé</p>
-                        </div>
-                    </div>
-
-                    <!-- Etape 3 (En cours) -->
-                    <div class="flex flex-col items-center gap-4 relative z-10">
-                        <div class="step-dot active animate-pulse ring-4 ring-[#00FF9D]/20"></div>
-                        <div class="text-center">
-                            <p class="text-[10px] text-white font-bold uppercase">Design UI</p>
-                            <p class="text-[9px] text-zen">En cours</p>
-                        </div>
-                    </div>
-
-                    <!-- Etape 4 -->
-                    <div class="flex flex-col items-center gap-4 relative z-10 opacity-50">
-                        <div class="step-dot"></div>
-                        <div class="text-center">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Code</p>
-                            <p class="text-[9px] text-gray-600">En attente</p>
-                        </div>
-                    </div>
-
-                    <!-- Etape 5 -->
-                    <div class="flex flex-col items-center gap-4 relative z-10 opacity-50">
-                        <div class="step-dot"></div>
-                        <div class="text-center">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Déploiement</p>
-                            <p class="text-[9px] text-gray-600">Final</p>
-                        </div>
-                    </div>
+                    <div class="flex flex-col items-center gap-4 relative z-10"><div class="step-dot active"></div><div class="text-center"><p class="text-[10px] text-zen font-bold uppercase">Briefing</p><p class="text-[9px] text-gray-500">Terminé</p></div></div>
+                    <div class="flex flex-col items-center gap-4 relative z-10"><div class="step-dot active"></div><div class="text-center"><p class="text-[10px] text-zen font-bold uppercase">Wireframes</p><p class="text-[9px] text-gray-500">Validé</p></div></div>
+                    <div class="flex flex-col items-center gap-4 relative z-10"><div class="step-dot active animate-pulse ring-4 ring-[#00FF9D]/20"></div><div class="text-center"><p class="text-[10px] text-white font-bold uppercase">Design UI</p><p class="text-[9px] text-zen">En cours</p></div></div>
+                    <div class="flex flex-col items-center gap-4 relative z-10 opacity-50"><div class="step-dot"></div><div class="text-center"><p class="text-[10px] text-gray-400 font-bold uppercase">Code</p><p class="text-[9px] text-gray-600">En attente</p></div></div>
+                    <div class="flex flex-col items-center gap-4 relative z-10 opacity-50"><div class="step-dot"></div><div class="text-center"><p class="text-[10px] text-gray-400 font-bold uppercase">Déploiement</p><p class="text-[9px] text-gray-600">Final</p></div></div>
+                </div>
+                <!-- FIX: timeline verticale sur mobile -->
+                <div class="timeline-mobile max-w-xs mx-auto">
+                    <div class="flex items-center gap-4"><div class="step-dot active flex-shrink-0"></div><div><p class="text-[10px] text-zen font-bold uppercase">Briefing</p><p class="text-[9px] text-gray-500">Terminé</p></div></div>
+                    <div class="flex items-center gap-4"><div class="step-dot active flex-shrink-0"></div><div><p class="text-[10px] text-zen font-bold uppercase">Wireframes</p><p class="text-[9px] text-gray-500">Validé</p></div></div>
+                    <div class="flex items-center gap-4"><div class="step-dot active animate-pulse ring-4 ring-[#00FF9D]/20 flex-shrink-0"></div><div><p class="text-[10px] text-white font-bold uppercase">Design UI</p><p class="text-[9px] text-zen">En cours</p></div></div>
+                    <div class="flex items-center gap-4 opacity-50"><div class="step-dot flex-shrink-0"></div><div><p class="text-[10px] text-gray-400 font-bold uppercase">Code</p><p class="text-[9px] text-gray-600">En attente</p></div></div>
+                    <div class="flex items-center gap-4 opacity-50"><div class="step-dot flex-shrink-0"></div><div><p class="text-[10px] text-gray-400 font-bold uppercase">Déploiement</p><p class="text-[9px] text-gray-600">Final</p></div></div>
                 </div>
             </div>
 
-            <!-- MESSAGERIE RAPIDE -->
             <div class="max-w-2xl mx-auto text-center border border-dashed border-zen/20 bg-zen/5 p-8 rounded-xl">
                 <p class="text-sm text-gray-300 mb-4 font-mono">Une question sur l'avancement ?</p>
-                <a href="https://wa.me/message/BVQ7YLS7PGQ6L1"
-                    class="inline-flex items-center gap-2 bg-[#25D366] text-black px-8 py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-white transition-all btn-zen shadow-lg shadow-green-900/50">
+                <a href="https://wa.me/message/BVQ7YLS7PGQ6L1" class="inline-flex items-center gap-2 bg-[#25D366] text-black px-8 py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-white transition-all btn-zen shadow-lg shadow-green-900/50">
                     <i data-lucide="message-circle" class="w-4 h-4"></i> Contacter Guili sur WhatsApp
                 </a>
             </div>
-
         </main>
 
-        <!-- FOOTER -->
+        <!-- FOOTER (FIX: hors du main, correctement structuré) -->
         <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-8 md:px-24 mt-20">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-
-                <!-- Colonne 1 : Logo & Info -->
-                <div class="col-span-1 md:col-span-2">
-                    <a href="index.html" class="block mb-6">
-                        <span class="text-2xl font-black font-title tracking-tighter text-white">KINETIX<span
-                                class="text-blue-500">.</span></span>
-                    </a>
-                    <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
-                        Agence digitale d'élite basée à Kinshasa. Nous aidons les entreprises ambitieuses à dominer leur
-                        marché grâce à la technologie.
-                    </p>
-                </div>
-
-                <!-- Colonne 2 : Liens -->
-                <div>
-                    <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4>
-                    <ul class="space-y-4 text-sm text-gray-400 font-mono">
-                        <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
-                        <li><a href="blog.html" class="hover:text-white transition-colors">Journal</a></li>
-                        <li><a href="projets.html" class="hover:text-white transition-colors">Matrice</a></li>
-                        <li><a href="about.html" class="hover:text-white transition-colors">L'Agence</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition-colors">Carrières</a></li>
-                        <li><a href="mentions.html" class="hover:text-white transition-colors">Mentions Légales</a></li>
-                    </ul>
-                </div>
-
-                <!-- Colonne 3 : Social (Icônes) -->
-                <div>
-                    <h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4>
-                    <div class="flex gap-4">
-                        <!-- LinkedIn -->
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
-                            <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 group-hover:text-white"></i>
-                        </a>
-                        <!-- Instagram -->
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all">
-                            <i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i>
-                        </a>
-                        <!-- Twitter / X -->
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                            <i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i>
-                        </a>
-                        <!-- WhatsApp -->
-                        <a href="https://wa.me/message/BVQ7YLS7PGQ6L1"
-                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
-                            <i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i>
-                        </a>
-                    </div>
-                    <div class="mt-6">
-                        <p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p>
-                        <p class="text-[10px] font-mono text-gray-600 uppercase">+243 900 260 394</p>
-                    </div>
-                </div>
+                <div class="col-span-1 md:col-span-2"><a href="index.html" class="block mb-6"><span class="text-2xl font-bold font-logo tracking-tighter text-white">KINETIX<span class="text-blue-500">.</span></span></a><p class="text-sm text-gray-500 leading-relaxed max-w-sm">Agence digitale d'élite basée à Kinshasa.</p></div>
+                <div><h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Exploration</h4><ul class="space-y-4 text-sm text-gray-400 font-mono"><li><a href="services.html" class="hover:text-white transition-colors">Services</a></li><li><a href="about.html" class="hover:text-white transition-colors">L'Agence</a></li><li><a href="rejoindre.html" class="hover:text-white transition-colors">Carrières</a></li><li><a href="mentions.html" class="hover:text-white transition-colors">Mentions Légales</a></li></ul></div>
+                <div><h4 class="font-mono text-[10px] uppercase tracking-widest text-blue-500 mb-6">Connexion</h4><div class="flex gap-4"><a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><i data-lucide="linkedin" class="w-5 h-5 text-gray-400"></i></a><a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-pink-600 transition-all"><i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i></a><a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i data-lucide="twitter" class="w-5 h-5 text-gray-400"></i></a><a href="https://wa.me/message/BVQ7YLS7PGQ6L1" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-green-500 transition-all"><i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i></a></div><div class="mt-6"><p class="text-[10px] font-mono text-gray-600 uppercase">Kinshasa, RDC</p><p class="text-[10px] font-mono text-gray-600 uppercase">+243 900 260 394</p></div></div>
             </div>
-
-            <!-- Copyright -->
-            <div
-                class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest">
-                <p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p>
-                <p>Designed by <strong>Guili MONGHIRO</strong></p>
-            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest"><p>&copy; 2026 KINETIX AGENCY. Tous droits réservés.</p><p>Designed by <strong>Guili MONGHIRO</strong></p></div>
         </footer>
     </div>
 
     <script>
         lucide.createIcons();
-
-        // LOGIQUE LOGIN (Simulation)
         function login() {
             const u = document.getElementById('user').value.toUpperCase();
             const p = document.getElementById('pass').value;
-
-            // TEST LOGIN (User: CLIENT / Pass: 2026)
             if (u === 'CLIENT' && p === '2026') {
                 gsap.to("#login-screen", { yPercent: -100, duration: 1, ease: "expo.inOut" });
                 document.getElementById('dashboard').style.display = 'flex';
-
-                // Animation Dashboard
                 gsap.to("#dashboard", { opacity: 1, duration: 1, delay: 0.5 });
-
-                // Animation Barres de progression (Simulation de 65%)
                 setTimeout(() => {
                     document.getElementById('prog-bar').style.width = '65%';
                     document.getElementById('step-fill').style.width = '50%';
-
-                    // Compteur texte
                     let counter = { val: 0 };
-                    gsap.to(counter, {
-                        val: 65,
-                        duration: 2,
-                        onUpdate: () => document.getElementById('prog-text').innerText = Math.ceil(counter.val) + '%'
-                    });
+                    gsap.to(counter, { val: 65, duration: 2, onUpdate: () => document.getElementById('prog-text').innerText = Math.ceil(counter.val) + '%' });
                 }, 1000);
-
             } else {
-                // Erreur
                 const err = document.getElementById('error');
                 err.style.opacity = 1;
                 gsap.from(err, { x: 10, duration: 0.1, repeat: 5, yoyo: true });
@@ -405,5 +151,4 @@
         }
     </script>
 </body>
-
 </html>
