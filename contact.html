@@ -78,7 +78,7 @@
             </div>
             <div class="space-y-8 font-mono text-xs tracking-widest border-l border-white/10 pl-8">
                 <div class="group cursor-pointer"><div class="opacity-40 mb-2">QG OPÉRATIONNEL</div><div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> KINSHASA, GOMBE, RDC</div></div>
-                <div class="group cursor-pointer"><div class="opacity-40 mb-2">CANAL DIRECT</div><div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> HELLO@KINETIX.TECH</div></div>
+                <div class="group cursor-pointer"><div class="opacity-40 mb-2">CANAL DIRECT</div><div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> HELLO@KINETIX.FUN</div></div>
                 <div class="group cursor-pointer"><div class="opacity-40 mb-2">LIGNE D'URGENCE</div><div class="text-white group-hover:text-blue-500 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +243 900 260 394</div></div>
             </div>
         </div>
@@ -87,13 +87,24 @@
             <div class="glass p-5 sm:p-8 md:p-12 rounded-[2rem] space-y-8 border border-white/5 relative overflow-hidden group">
                 <div class="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style="background-image:url('https://grainy-gradients.vercel.app/noise.svg')"></div>
                 <div class="absolute top-0 right-0 p-6 opacity-30"><i data-lucide="wifi" class="w-6 h-6 animate-pulse text-emerald-500"></i></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2 relative z-10"><label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Identifiant (Nom)</label><input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono" placeholder="Ex: John Doe"></div>
-                    <div class="space-y-2 relative z-10"><label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Fréquence (Email)</label><input type="email" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono" placeholder="Ex: john@company.com"></div>
-                </div>
-                <div class="space-y-2 relative z-10"><label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Type de Mission</label><select class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono cursor-pointer appearance-none"><option>Développement Web Cinématique</option><option>Application Mobile Native</option><option>Architecture Backend / API</option><option>Branding & Design 3D</option><option>Consulting Technique</option></select></div>
-                <div class="space-y-2 relative z-10"><label class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Données de la Mission</label><textarea rows="5" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono resize-none" placeholder="Décrivez vos objectifs, votre budget estimé et votre timeline..."></textarea></div>
-                <button class="w-full py-6 bg-blue-500 hover:bg-white hover:text-black text-white font-bold tracking-widest rounded-xl transition-all uppercase font-title text-sm md:text-lg flex justify-center items-center gap-4 group relative z-10 overflow-hidden"><span class="relative z-10">Transmettre les données</span><i data-lucide="send" class="w-4 h-4 group-hover:translate-x-2 transition-transform relative z-10"></i><div class="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ease-out duration-300"></div></button>
+                <form id="contact-form" novalidate class="space-y-8">
+                    <!-- Honeypot anti-spam : invisible pour les humains, piège à bots -->
+                    <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;">
+                        <label>Ne pas remplir<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+                    </div>
+                    <input type="hidden" name="loadedAt" id="cf-loaded-at">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2 relative z-10"><label for="cf-name" class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Identifiant (Nom)</label><input id="cf-name" name="name" type="text" required minlength="2" maxlength="100" autocomplete="name" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono" placeholder="Ex: John Doe"></div>
+                        <div class="space-y-2 relative z-10"><label for="cf-email" class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Fréquence (Email)</label><input id="cf-email" name="email" type="email" required maxlength="150" autocomplete="email" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono" placeholder="Ex: john@company.com"></div>
+                    </div>
+                    <div class="space-y-2 relative z-10"><label for="cf-type" class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Type de Mission</label><select id="cf-type" name="projectType" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono cursor-pointer appearance-none"><option value="Développement Web Cinématique">Développement Web Cinématique</option><option value="Application Mobile Native">Application Mobile Native</option><option value="Architecture Backend / API">Architecture Backend / API</option><option value="Branding & Design 3D">Branding & Design 3D</option><option value="Consulting Technique">Consulting Technique</option></select></div>
+                    <div class="space-y-2 relative z-10"><label for="cf-message" class="font-mono text-[9px] uppercase tracking-widest opacity-50 flex items-center gap-2"><span class="w-1 h-1 bg-blue-500 rounded-full"></span> Données de la Mission</label><textarea id="cf-message" name="message" required minlength="10" maxlength="5000" rows="5" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:bg-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-mono resize-none" placeholder="Décrivez vos objectifs, votre budget estimé et votre timeline..."></textarea></div>
+
+                    <div id="cf-status" role="status" aria-live="polite" class="hidden font-mono text-xs rounded-xl p-4 border leading-relaxed"></div>
+
+                    <button id="cf-submit" type="submit" class="w-full py-6 bg-blue-500 hover:bg-white hover:text-black text-white font-bold tracking-widest rounded-xl transition-all uppercase font-title text-sm md:text-lg flex justify-center items-center gap-4 group relative z-10 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"><span id="cf-submit-label" class="relative z-10">Transmettre les données</span><i data-lucide="send" class="w-4 h-4 group-hover:translate-x-2 transition-transform relative z-10"></i><div class="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ease-out duration-300"></div></button>
+                </form>
             </div>
         </div>
     </section>
@@ -117,6 +128,86 @@
         const cursor=document.getElementById('custom-cursor');const follower=document.getElementById('cursor-follower');document.addEventListener('mousemove',(e)=>{gsap.to(cursor,{x:e.clientX,y:e.clientY,duration:0});gsap.to(follower,{x:e.clientX-20,y:e.clientY-20,duration:0.2});});
         function initAnimations(){gsap.utils.toArray('.reveal-up').forEach(elem=>{gsap.from(elem,{scrollTrigger:{trigger:elem,start:"top 85%"},y:50,opacity:0,duration:1,ease:"power3.out"});});}
 
+    </script>
+
+    <script>
+    (function () {
+        var form = document.getElementById('contact-form');
+        if (!form) return;
+        var statusEl = document.getElementById('cf-status');
+        var btn = document.getElementById('cf-submit');
+        var label = document.getElementById('cf-submit-label');
+        var loadedAt = document.getElementById('cf-loaded-at');
+        if (loadedAt) loadedAt.value = String(Date.now());
+
+        var ENDPOINT = '/api/contact';
+        var BASE = 'font-mono text-xs rounded-xl p-4 border leading-relaxed ';
+        var STYLES = {
+            success: BASE + 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300',
+            error:   BASE + 'bg-red-500/10 border-red-500/40 text-red-300',
+            info:    BASE + 'bg-blue-500/10 border-blue-500/40 text-blue-300'
+        };
+
+        function setStatus(type, msg) {
+            statusEl.className = STYLES[type];
+            statusEl.textContent = msg;
+            statusEl.classList.remove('hidden');
+        }
+        function setLoading(on) {
+            btn.disabled = on;
+            label.textContent = on ? 'TRANSMISSION EN COURS...' : 'Transmettre les données';
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!form.checkValidity()) {
+                setStatus('error', '// ERREUR : vérifiez les champs requis (nom, email valide, message de 10 caractères min.).');
+                form.reportValidity();
+                return;
+            }
+            setLoading(true);
+            setStatus('info', '// Établissement du canal sécurisé...');
+
+            var fd = new FormData(form);
+            var payload = {
+                name: (fd.get('name') || '').toString().trim(),
+                email: (fd.get('email') || '').toString().trim(),
+                projectType: (fd.get('projectType') || '').toString(),
+                message: (fd.get('message') || '').toString().trim(),
+                company: (fd.get('company') || '').toString(),
+                loadedAt: (fd.get('loadedAt') || '').toString()
+            };
+
+            fetch(ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (res) {
+                return res.json().catch(function () { return {}; }).then(function (data) {
+                    return { status: res.status, ok: res.ok, data: data };
+                });
+            }).then(function (r) {
+                if (r.ok && r.data.ok) {
+                    form.reset();
+                    if (loadedAt) loadedAt.value = String(Date.now());
+                    setStatus('success', '// MISSION INITIALISÉE. Transmission reçue — réponse sous 24h. \u2713');
+                } else if (r.status === 400 && r.data.errors) {
+                    var msgs = [];
+                    Object.keys(r.data.errors).forEach(function (k) {
+                        [].concat(r.data.errors[k]).forEach(function (m) { msgs.push(m); });
+                    });
+                    setStatus('error', '// VALIDATION : ' + msgs.join(' \u00b7 '));
+                } else {
+                    setStatus('error', '// ECHEC DE TRANSMISSION. Reessayez ou ecrivez a hello@kinetix.fun');
+                }
+            }).catch(function () {
+                setStatus('error', '// CONNEXION INTERROMPUE. Verifiez votre reseau et reessayez.');
+            }).then(function () {
+                setLoading(false);
+                if (window.lucide) lucide.createIcons();
+            });
+        });
+    })();
     </script>
 </body>
 </html>
