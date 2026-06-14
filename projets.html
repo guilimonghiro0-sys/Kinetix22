@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;900&family=JetBrains+Mono&display=swap');
-        :root{--primary:#4B82F6;--bg:#05070A}
+        :root{--primary:#3B82F6;--bg:#05070A}
         body{background-color:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden;cursor:none}
         .font-title{font-family:'Syncopate',sans-serif}.font-mono{font-family:'JetBrains Mono',monospace}
         .glass{background:rgba(255,255,255,0.02);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.05);transition:all 0.6s cubic-bezier(0.16,1,0.3,1)}
@@ -74,58 +74,155 @@
         <div class="max-w-7xl">
             <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-8">// ARCHIVES_DU_NEXUS</div>
             <h1 class="text-5xl sm:text-6xl md:text-9xl font-black font-title leading-none tracking-tighter mb-12">RÉALITÉS <br><span class="text-transparent" style="-webkit-text-stroke:1px white;">DÉPLOYÉES.</span></h1>
-            <div class="flex flex-wrap gap-8 mt-12 font-mono text-xs tracking-widest cursor-pointer">
-                <span class="text-blue-500 border-b border-blue-500 pb-1">TOUT [4]</span>
-                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">FINTECH [1]</span>
-                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">LOGISTIQUE [1]</span>
-                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">IMMOBILIER [1]</span>
-                <span class="opacity-40 hover:opacity-100 hover:text-white transition-all">E-COMMERCE [1]</span>
-            </div>
+            <div id="project-filters" class="flex flex-wrap gap-6 mt-12 font-mono text-xs tracking-widest"></div>
         </div>
     </section>
 
+    <style>
+        @keyframes kxCardIn { from { opacity:0; transform: translateY(28px); } to { opacity:1; transform:none; } }
+        .kx-card { animation: kxCardIn .7s cubic-bezier(.16,1,.3,1) both; }
+        .kx-card:nth-child(2){animation-delay:.06s}.kx-card:nth-child(3){animation-delay:.12s}
+        .kx-card:nth-child(4){animation-delay:.18s}.kx-card:nth-child(5){animation-delay:.24s}.kx-card:nth-child(6){animation-delay:.30s}
+    </style>
+
+    <section class="pb-28 px-8 md:px-24">
+        <div id="projects-grid" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10"></div>
+    </section>
+
     <section class="pb-40 px-8 md:px-24">
-        <!-- FIX: offset corrigé lg: au lieu de md: pour le layout masonry -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div class="project-card group reveal-up">
-                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop" class="project-img" alt="Fintech">
-                <div class="project-overlay"></div>
-                <div class="project-info">
-                    <div class="flex gap-4 mb-4"><span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">REACT.JS</span><span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">WEB3</span></div>
-                    <h3 class="text-4xl font-bold mb-2">Aether Capital</h3>
-                    <p class="opacity-60 text-sm">Plateforme d'investissement décentralisée pour le marché de la RDC.</p>
-                </div>
-            </div>
-            <!-- FIX: mt uniquement à partir de lg -->
-            <div class="project-card group lg:mt-20 reveal-up">
-                <img src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1974&auto=format&fit=crop" class="project-img" alt="Logistique">
-                <div class="project-overlay"></div>
-                <div class="project-info">
-                    <div class="flex gap-4 mb-4"><span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">IOT</span><span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">THREE.JS</span></div>
-                    <h3 class="text-4xl font-bold mb-2">KinFlow Systems</h3>
-                    <p class="opacity-60 text-sm">Suivi logistique en temps réel avec visualisation 3D de la flotte.</p>
-                </div>
-            </div>
-            <div class="project-card group reveal-up">
-                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" class="project-img" alt="Immobilier">
-                <div class="project-overlay"></div>
-                <div class="project-info">
-                    <div class="flex gap-4 mb-4"><span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">VR</span><span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">MOBILE APP</span></div>
-                    <h3 class="text-4xl font-bold mb-2">ImmoFutur Gombe</h3>
-                    <p class="opacity-60 text-sm">Visites virtuelles d'appartements de luxe à Kinshasa.</p>
-                </div>
-            </div>
-            <div class="project-card group lg:mt-20 reveal-up">
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop" class="project-img" alt="E-commerce">
-                <div class="project-overlay"></div>
-                <div class="project-info">
-                    <div class="flex gap-4 mb-4"><span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full font-mono text-[9px] tracking-widest">SHOPIFY PLUS</span><span class="px-3 py-1 bg-white/10 rounded-full font-mono text-[9px] tracking-widest">BRANDING</span></div>
-                    <h3 class="text-4xl font-bold mb-2">Luxe Kinshasa</h3>
-                    <p class="opacity-60 text-sm">Expérience e-commerce premium pour une marque de mode locale.</p>
-                </div>
-            </div>
+        <div class="max-w-7xl mx-auto">
+            <div class="font-mono text-[10px] tracking-[0.6em] text-blue-500 mb-6">// STACK_TECHNIQUE</div>
+            <h2 class="text-4xl md:text-6xl font-black font-title tracking-tighter mb-12">L'ARSENAL.</h2>
+            <div id="stack-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
     </section>
+
+    <script>
+    (function () {
+        // ============================================================
+        //  SOURCE DE VÉRITÉ — pour ajouter un projet, ajoute un objet.
+        //  image: null  => carte "monogramme" auto. Sinon: "images/xxx.webp"
+        //  url: null    => badge "Bientôt en ligne" (ex: domaine pas acheté)
+        // ============================================================
+        var PROJECTS = [
+            {
+                name: 'EduFirst',
+                sector: 'SaaS / Éducation', sectorKey: 'saas',
+                year: '2026', accent: 'blue', url: 'https://edufirst.pro', image: null,
+                description: "Plateforme SaaS de gestion scolaire pour l'Afrique : bulletins PDF générés par IA, suivi de présence, dashboards par rôle, prédiction d'échec et paiement WhatsApp Business. De la maternelle à l'université.",
+                tech: ['React', 'Vite', 'TypeScript', 'shadcn/ui', 'Django', 'DRF', 'PostgreSQL', 'WeasyPrint', 'Claude API']
+            },
+            {
+                name: 'El~Cosmétique',
+                sector: 'E-commerce', sectorKey: 'ecommerce',
+                year: '2024', accent: 'emerald', url: 'https://el-cosmetique.vercel.app', image: null,
+                description: "Site vitrine premium pour la marque Belisah Plus (nutrition & cosmétique, RDC). Catalogue produits, pages dédiées et commande directe via WhatsApp Business.",
+                tech: ['HTML5', 'Tailwind CSS', 'JavaScript', 'GSAP']
+            },
+            {
+                name: 'Portfolio Créatif',
+                sector: 'Web Créatif', sectorKey: 'creative',
+                year: '2026', accent: 'blue', url: 'https://monghiro.vercel.app', image: null,
+                description: "Portfolio cinématique : animations GSAP en cascade, systèmes de particules réactifs, text-scramble et scroll narratif. La vitrine du savoir-faire motion de l'agence.",
+                tech: ['React', 'TypeScript', 'GSAP', 'Three.js', 'Tailwind']
+            },
+            {
+                name: 'Mastercom 360',
+                sector: 'Communication', sectorKey: 'comm',
+                year: '2025', accent: 'emerald', url: 'https://mastercom360.netlify.app', image: null,
+                description: "Présence web pour une agence de communication 360° \u2014 positionnement \u00ab Communication d'Impact \u00bb : branding, strat\u00e9gie de marque et visibilit\u00e9 digitale.",
+                tech: ['HTML5', 'Tailwind CSS', 'JavaScript', 'GSAP']
+            },
+            {
+                name: 'Rapunchline Chrétien',
+                sector: 'Média / Culture', sectorKey: 'media',
+                year: '2026', accent: 'blue', url: 'https://demorapunchline.netlify.app', image: null,
+                description: "Plateforme m\u00e9dia immersive d\u00e9di\u00e9e \u00e0 la culture rap chr\u00e9tienne (\u00ab Kingdom Culture \u00bb) : articles, interviews, marquee anim\u00e9 et scroll narratif \u00e0 forte direction artistique \u00e9ditoriale.",
+                tech: ['HTML5', 'Tailwind CSS', 'GSAP', 'JavaScript']
+            }
+        ];
+
+        var STACK = [
+            { group: 'Frontend',    items: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'shadcn/ui', 'Framer Motion'] },
+            { group: 'Backend',     items: ['Django', 'Django REST', 'PostgreSQL', 'JWT Auth'] },
+            { group: 'Motion & 3D', items: ['GSAP', 'Three.js', 'WebGL', 'Spline'] },
+            { group: 'IA & Outils', items: ['Claude API', 'WeasyPrint', 'Figma'] }
+        ];
+
+        function initials(name) {
+            var parts = name.replace(/[^A-Za-zÀ-ÿ ~]/g, '').split(/[ ~]+/).filter(Boolean);
+            if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+            return (parts[0] || 'K').slice(0, 2).toUpperCase();
+        }
+
+        function card(p) {
+            var rgb = p.accent === 'emerald' ? '16,185,129' : '59,130,246';
+            var status = p.url
+                ? '<span class="flex items-center gap-1.5 text-[9px] font-mono tracking-widest text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>EN LIGNE</span>'
+                : '<span class="flex items-center gap-1.5 text-[9px] font-mono tracking-widest text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>EN DÉVELOPPEMENT</span>';
+            var cover = p.image
+                ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-700">'
+                : '<span class="absolute bottom-4 left-7 font-title font-black text-7xl md:text-8xl text-white/10 group-hover:text-white/20 transition-colors select-none">' + initials(p.name) + '</span>';
+            var pills = p.tech.map(function (t) {
+                return '<span class="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full font-mono text-[9px] tracking-wider text-gray-300">' + t + '</span>';
+            }).join('');
+            var link = p.url
+                ? '<a href="' + p.url + '" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-6 font-mono text-[10px] tracking-widest text-blue-400 hover:text-white transition-colors">VOIR LE PROJET <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i></a>'
+                : '<span class="inline-flex items-center gap-2 mt-6 font-mono text-[10px] tracking-widest text-gray-600">BIENTÔT EN LIGNE</span>';
+            return '<article class="kx-card group rounded-[1.75rem] overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-colors">'
+                + '<div class="relative h-52 md:h-60 overflow-hidden" style="background:linear-gradient(135deg, rgba(' + rgb + ',0.30), #05070A 65%);">'
+                + '<div class="absolute inset-0 opacity-[0.06]" style="background-image:radial-gradient(rgba(255,255,255,.8) 1px,transparent 1px);background-size:22px 22px;"></div>'
+                + cover
+                + '<div class="absolute top-5 left-7 right-7 flex justify-between items-center">' + status + '<span class="font-mono text-[9px] tracking-widest text-white/40">' + (p.year || '') + '</span></div>'
+                + '</div>'
+                + '<div class="p-7 md:p-8">'
+                + '<div class="font-mono text-[9px] tracking-[0.3em] text-blue-500 mb-3">' + p.sector.toUpperCase() + '</div>'
+                + '<h3 class="text-3xl md:text-4xl font-bold mb-3">' + p.name + '</h3>'
+                + '<p class="opacity-60 text-sm leading-relaxed mb-5">' + p.description + '</p>'
+                + '<div class="flex flex-wrap gap-2">' + pills + '</div>'
+                + link
+                + '</div></article>';
+        }
+
+        // ---- Filtres dynamiques ----
+        var filters = [{ key: 'all', label: 'TOUT' }];
+        var seen = {};
+        PROJECTS.forEach(function (p) {
+            if (!seen[p.sectorKey]) { seen[p.sectorKey] = 1; filters.push({ key: p.sectorKey, label: p.sector.toUpperCase() }); }
+        });
+        function count(k) { return k === 'all' ? PROJECTS.length : PROJECTS.filter(function (p) { return p.sectorKey === k; }).length; }
+
+        function renderFilters(active) {
+            var el = document.getElementById('project-filters'); if (!el) return;
+            el.innerHTML = filters.map(function (f) {
+                var on = f.key === active;
+                return '<button type="button" data-filter="' + f.key + '" class="filter-btn pb-1 border-b transition-all ' + (on ? 'text-blue-500 border-blue-500' : 'text-white/40 border-transparent hover:text-white') + '">' + f.label + ' [' + count(f.key) + ']</button>';
+            }).join('');
+            el.querySelectorAll('.filter-btn').forEach(function (b) {
+                b.addEventListener('click', function () { var k = b.getAttribute('data-filter'); renderFilters(k); renderGrid(k); });
+            });
+        }
+        function renderGrid(key) {
+            var grid = document.getElementById('projects-grid'); if (!grid) return;
+            var list = key === 'all' ? PROJECTS : PROJECTS.filter(function (p) { return p.sectorKey === key; });
+            grid.innerHTML = list.map(card).join('');
+            if (window.lucide) lucide.createIcons();
+        }
+        function renderStack() {
+            var el = document.getElementById('stack-grid'); if (!el) return;
+            el.innerHTML = STACK.map(function (g) {
+                return '<div class="border border-white/10 rounded-2xl p-6 bg-white/[0.02]">'
+                    + '<div class="font-mono text-[9px] tracking-[0.3em] text-blue-500 mb-4">' + g.group.toUpperCase() + '</div>'
+                    + '<div class="flex flex-wrap gap-2">' + g.items.map(function (i) { return '<span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs">' + i + '</span>'; }).join('') + '</div>'
+                    + '</div>';
+            }).join('');
+        }
+
+        renderFilters('all');
+        renderGrid('all');
+        renderStack();
+    })();
+    </script>
 
     <footer class="relative z-10 bg-[#020305] border-t border-white/5 pt-16 pb-8 px-8 md:px-24">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
